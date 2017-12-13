@@ -22,9 +22,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.android.messaging.R;
@@ -109,6 +113,16 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     }
 
+    //*/ freeme.linqingwei, 20171213. redesign conversation list.
+    @Override
+    public ConversationListAdapter getCurrentAdapter() {
+        if (mConversationListFragment != null) {
+            return mConversationListFragment.getConversationListAdapter();
+        }
+
+        return null;
+    }
+    /*/
     @Override
     public void onActionBarDelete(final Collection<SelectedConversation> conversations) {
         if (!PhoneUtils.getDefault().isDefaultSmsApp()) {
@@ -127,8 +141,8 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
                             }
                         },
                         getString(R.string.requires_default_sms_change_button)),
-                    null /* interactions */,
-                    null /* placement */);
+                    null / * interactions * /,
+                    null / * placement * /);
             return;
         }
 
@@ -201,7 +215,7 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
                 R.string.notification_on_toast_message : R.string.notification_off_toast_message;
         final String message = getResources().getString(textId, 1);
         UiUtils.showSnackBar(this, findViewById(android.R.id.list), message,
-            null /* undoRunnable */,
+            null / * undoRunnable * /,
             SnackBar.Action.SNACK_BAR_UNDO, mConversationListFragment.getSnackBarInteractions());
         exitMultiSelectState();
     }
@@ -238,7 +252,7 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
                         final UpdateDestinationBlockedAction.UpdateDestinationBlockedActionListener
                                 undoListener =
                                         new UpdateDestinationBlockedActionSnackBar(
-                                                context, listView, null /* undoRunnable */,
+                                                context, listView, null / * undoRunnable * /,
                                                 interactions);
                         final Runnable undoRunnable = new Runnable() {
                             @Override
@@ -262,15 +276,19 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
                 .create()
                 .show();
     }
+    //*/
 
     @Override
     public void onConversationClick(final ConversationListData listData,
                                     final ConversationListItemData conversationListItemData,
                                     final boolean isLongClick,
                                     final ConversationListItemView conversationView) {
+        //*/ freeme.linqingwei, 20171213. redesign conversation list.
+        /*/
         if (isLongClick && !isInConversationListSelectMode()) {
             startMultiSelectActionMode();
         }
+        //*/
 
         if (isInConversationListSelectMode()) {
             final MultiSelectActionModeCallback multiSelectActionMode =
@@ -306,6 +324,21 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
         DebugUtils.showDebugOptions(this);
     }
 
+    //*/ freeme.linqingwei, 20171213. redesign conversation list.
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_delete:
+                startMultiSelectActionMode();
+                return true;
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(menuItem);
+    }
+
+    /*/
     private static class UpdateDestinationBlockedActionSnackBar
             implements UpdateDestinationBlockedAction.UpdateDestinationBlockedActionListener {
         private final Context mContext;
@@ -336,4 +369,5 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
             }
         }
     }
+    //*/
 }

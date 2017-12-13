@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="select_conversations">選擇對話群組</string>
+    <string name="select_all">選擇全部</string>
+    <string name="deselect_all">全部不選</string>
+    <plurals name="message_view_selected_message_count">
+        <item quantity="one">已選擇<xliff:g example="1" id="message_count">%d</xliff:g></item>
+        <item quantity="other"><xliff:g example="9" id="message_count">%d</xliff:g> 已選</item>
+    </plurals>
+    <string name="action_delete_conversation">刪除會話串</string>
+    <string name="menu_view">檢視會話串</string>
+</resources>

@@ -24,6 +24,8 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
+            res.srcDirs('src/main/res', 'freeme/res')
+            java.srcDirs('src/main/java', 'freeme/src')
         }
     }
     configurations.all {

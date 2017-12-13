@@ -18,6 +18,7 @@
     xmlns:appcompat="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" >
 
+    <!-- @{ freeme.linqingwei, 20171213. redesign conversation list.
     <item android:id="@+id/action_start_new_conversation"
         android:title="@string/start_new_conversation"
         android:icon="@drawable/ic_add_white"
@@ -35,6 +36,12 @@
         android:orderInCategory="300"
         android:title="@string/blocked_contacts_title"
         appcompat:showAsAction="never"/>
+    -->
+    <item
+        android:id="@+id/action_delete"
+        android:title="@string/action_delete_conversation"
+        appcompat:showAsAction="never" />
+    <!-- @} -->
 
     <item
         android:id="@+id/action_settings"

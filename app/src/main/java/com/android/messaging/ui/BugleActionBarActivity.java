@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ActionMode;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -213,6 +214,9 @@ public class BugleActionBarActivity extends AppCompatActivity implements ImeUtil
     @Override
     public ActionMode startActionMode(final ActionMode.Callback callback) {
         mActionMode = new CustomActionMode(callback);
+        //*/ freeme.linqingwei, 20171213. redesign conversation list.
+        mActionMode.setCustomView(getActionModeView());
+        //*/
         supportInvalidateOptionsMenu();
         invalidateActionBar();
         return mActionMode;
@@ -259,7 +263,24 @@ public class BugleActionBarActivity extends AppCompatActivity implements ImeUtil
 
     protected void updateActionBar(final ActionBar actionBar) {
         actionBar.setHomeAsUpIndicator(null);
+        //*/ freeme.linqingwei, 20171213. redesign conversation list.
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setDisplayShowCustomEnabled(false);
+        //*/
     }
+
+    //*/ freeme.linqingwei, 20171213. redesign conversation list.
+    private View mActionModeView;
+
+    private View getActionModeView() {
+        if (mActionModeView == null) {
+            mActionModeView = LayoutInflater.from(this)
+                    .inflate(R.layout.freeme_layout_action_mode, null);
+        }
+
+        return mActionModeView;
+    }
+    //*/
 
     /**
      * Custom ActionMode implementation which allows us to just replace the contents of the main
@@ -343,6 +364,16 @@ public class BugleActionBarActivity extends AppCompatActivity implements ImeUtil
         }
 
         public void updateActionBar(final ActionBar actionBar) {
+            //*/ freeme.linqingwei, 20171213. redesign conversation list.
+            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowCustomEnabled(true);
+            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                    ActionBar.LayoutParams.MATCH_PARENT,
+                    ActionBar.LayoutParams.MATCH_PARENT);
+            actionBar.setCustomView(getCustomView(), lp);
+            /*/
             actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP);
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayShowCustomEnabled(false);
@@ -350,6 +381,7 @@ public class BugleActionBarActivity extends AppCompatActivity implements ImeUtil
             actionBar.setBackgroundDrawable(new ColorDrawable(
                     getResources().getColor(R.color.contextual_action_bar_background_color)));
             actionBar.setHomeAsUpIndicator(R.drawable.ic_cancel_small_dark);
+            //*/
             actionBar.show();
         }
     }

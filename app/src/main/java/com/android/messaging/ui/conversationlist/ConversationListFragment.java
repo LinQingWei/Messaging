@@ -307,6 +307,8 @@ public class ConversationListFragment extends Fragment implements ConversationLi
     @Override
     public void onPrepareOptionsMenu(final Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        //*/ freeme.linqingwei, 20171213. redesign conversation list.
+        /*/
         final MenuItem startNewConversationMenuItem =
                 menu.findItem(R.id.action_start_new_conversation);
         if (startNewConversationMenuItem != null) {
@@ -322,6 +324,7 @@ public class ConversationListFragment extends Fragment implements ConversationLi
         if (archive != null) {
             archive.setVisible(true);
         }
+        //*/
     }
 
     @Override
@@ -331,10 +334,13 @@ public class ConversationListFragment extends Fragment implements ConversationLi
             return;
         }
 
+        //*/ freeme.linqingwei, 20171213. redesign conversation list.
+        /*/
         mShowBlockedMenuItem = menu.findItem(R.id.action_show_blocked_contacts);
         if (mShowBlockedMenuItem != null) {
             mShowBlockedMenuItem.setVisible(mBlockedAvailable);
         }
+        //*/
     }
 
     /**
@@ -443,4 +449,10 @@ public class ConversationListFragment extends Fragment implements ConversationLi
     public boolean isSelectionMode() {
         return mHost != null && mHost.isSelectionMode();
     }
+
+    //*/ freeme.linqingwei, 20171213. redesign conversation list.
+    protected ConversationListAdapter getConversationListAdapter() {
+        return mAdapter;
+    }
+    //*/
 }

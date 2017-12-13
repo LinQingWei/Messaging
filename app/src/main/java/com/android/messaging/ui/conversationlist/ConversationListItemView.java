@@ -27,6 +27,7 @@ import android.support.v4.text.TextDirectionHeuristicsCompat;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.ContextMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLayoutChangeListener;
@@ -368,7 +369,11 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
         resetAnimatingState();
 
         mSwipeableContainer.setOnClickListener(this);
+        //*/ freeme.linqingwei, 20171213. redesign conversation list.
+        mSwipeableContainer.setOnCreateContextMenuListener(mOnCreateContextMenuListener);
+        /*/
         mSwipeableContainer.setOnLongClickListener(this);
+        //*/
 
         final Resources resources = getContext().getResources();
 
@@ -648,4 +653,21 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
         }
         return snippetText;
     }
+
+    //*/ freeme.linqingwei, 20171213. redesign conversation list.
+    public static final int MENU_VIEW_THREAD          = 0;
+    public static final int MENU_DELETE_THREAD        = 1;
+    public static final int MENU_TOP_THREAD           = 2;
+    public static final int MENU_NOTIFY_THREAD        = 3;
+
+    private OnCreateContextMenuListener mOnCreateContextMenuListener = new OnCreateContextMenuListener() {
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.setHeaderTitle(mData.getName());
+            menu.add(0, MENU_VIEW_THREAD, MENU_VIEW_THREAD, R.string.menu_view);
+            menu.add(0, MENU_DELETE_THREAD, MENU_VIEW_THREAD, R.string.action_delete);
+        }
+    };
+
+    //*/
 }

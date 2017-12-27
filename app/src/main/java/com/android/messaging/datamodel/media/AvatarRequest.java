@@ -61,7 +61,7 @@ public class AvatarRequest extends UriImageRequest<AvatarRequestDescriptor> {
 
     /**
      * We can load multiple types of images for avatars depending on the uri. The uri should be
-     * built by {@link AvatarUriUtil} which will decide on
+     * built by {@link com.android.messaging.util.AvatarUriUtil} which will decide on
      * what uri to build based on the available profile photo and name. Here we will check if the
      * image is a local resource (ie profile photo uri), if the resource isn't a local one we will
      * generate a tile with the first letter of the name.

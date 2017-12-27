@@ -274,17 +274,17 @@ public abstract class LogSaver {
 
     private static String getLevelString(final int level) {
         switch (level) {
-            case Log.DEBUG:
+            case android.util.Log.DEBUG:
                 return "D";
-            case Log.WARN:
+            case android.util.Log.WARN:
                 return "W";
-            case Log.INFO:
+            case android.util.Log.INFO:
                 return "I";
-            case Log.VERBOSE:
+            case android.util.Log.VERBOSE:
                 return "V";
-            case Log.ERROR:
+            case android.util.Log.ERROR:
                 return "E";
-            case Log.ASSERT:
+            case android.util.Log.ASSERT:
                 return "A";
             default:
                 return "?";

@@ -43,7 +43,7 @@ public class PeopleAndOptionsData extends BindableData implements
     public interface PeopleAndOptionsDataListener {
         void onOptionsCursorUpdated(PeopleAndOptionsData data, Cursor cursor);
         void onParticipantsListLoaded(PeopleAndOptionsData data,
-                                      List<ParticipantData> participants);
+                List<ParticipantData> participants);
     }
 
     private static final String BINDING_ID = "bindingId";

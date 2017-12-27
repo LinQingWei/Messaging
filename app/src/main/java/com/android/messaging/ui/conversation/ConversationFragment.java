@@ -216,7 +216,7 @@ public class ConversationFragment extends Fragment implements ConversationDataLi
             // If the recyclerView height is 0, then the last visible item position is -1
             // Try to compute the position of the last item, even though it's not visible
             final long id = mRecyclerView.getChildItemId(lastView);
-            final ViewHolder holder = mRecyclerView.findViewHolderForItemId(id);
+            final RecyclerView.ViewHolder holder = mRecyclerView.findViewHolderForItemId(id);
             if (holder != null) {
                 lastVisibleItem = holder.getAdapterPosition();
             }
@@ -814,7 +814,7 @@ public class ConversationFragment extends Fragment implements ConversationDataLi
                             .setTitle(getResources().getQuantityString(
                                     R.plurals.delete_conversations_confirmation_dialog_title, 1))
                             .setPositiveButton(R.string.delete_conversation_confirmation_button,
-                                    new OnClickListener() {
+                                    new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(final DialogInterface dialog,
                                                 final int button) {

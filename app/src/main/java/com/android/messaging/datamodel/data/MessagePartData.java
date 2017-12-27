@@ -391,8 +391,8 @@ public class MessagePartData implements Parcelable {
         return result;
       }
 
-    public static final Creator<MessagePartData> CREATOR
-            = new Creator<MessagePartData>() {
+    public static final Parcelable.Creator<MessagePartData> CREATOR
+            = new Parcelable.Creator<MessagePartData>() {
         @Override
         public MessagePartData createFromParcel(final Parcel in) {
             return new MessagePartData(in);

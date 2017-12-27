@@ -170,7 +170,7 @@ public class NotificationPlayer implements OnCompletionListener {
         }
     }
 
-    private final class CmdThread extends Thread {
+    private final class CmdThread extends java.lang.Thread {
         CmdThread() {
             super("NotificationPlayer-" + mTag);
         }

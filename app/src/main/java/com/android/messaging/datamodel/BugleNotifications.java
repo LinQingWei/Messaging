@@ -568,7 +568,7 @@ public class BugleNotifications {
         for (int i = 0; i < originalPathsSize; i++) {
             newPathBuilder.append('/');
             if (i == 2) {
-                newPathBuilder.append(Contacts.Photo.DISPLAY_PHOTO);
+                newPathBuilder.append(ContactsContract.Contacts.Photo.DISPLAY_PHOTO);
             } else {
                 newPathBuilder.append(originalPaths.get(i));
             }
@@ -754,7 +754,7 @@ public class BugleNotifications {
 
                     // Make sure our bitmap has a valid format.
                     if (config == null) {
-                        config = Config.ARGB_8888;
+                        config = Bitmap.Config.ARGB_8888;
                     }
                     attachmentBitmap = imageResourceBitmap.copy(config, true);
                 } finally {

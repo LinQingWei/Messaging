@@ -36,9 +36,9 @@ public class MultiSelectActionModeCallback implements Callback {
     public interface Listener {
         void onActionBarDelete(Collection<SelectedConversation> conversations);
         void onActionBarArchive(Iterable<SelectedConversation> conversations,
-                                boolean isToArchive);
+                boolean isToArchive);
         void onActionBarNotification(Iterable<SelectedConversation> conversations,
-                                     boolean isNotificationOn);
+                boolean isNotificationOn);
         void onActionBarAddContact(final SelectedConversation conversation);
         void onActionBarBlock(final SelectedConversation conversation);
         void onActionBarHome();

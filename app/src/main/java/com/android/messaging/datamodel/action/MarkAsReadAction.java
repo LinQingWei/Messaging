@@ -93,8 +93,8 @@ public class MarkAsReadAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<MarkAsReadAction> CREATOR
-            = new Creator<MarkAsReadAction>() {
+    public static final Parcelable.Creator<MarkAsReadAction> CREATOR
+            = new Parcelable.Creator<MarkAsReadAction>() {
         @Override
         public MarkAsReadAction createFromParcel(final Parcel in) {
             return new MarkAsReadAction(in);

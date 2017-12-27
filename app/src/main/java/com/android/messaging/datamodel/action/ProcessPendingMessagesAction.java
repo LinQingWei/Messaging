@@ -450,8 +450,8 @@ public class ProcessPendingMessagesAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<ProcessPendingMessagesAction> CREATOR
-            = new Creator<ProcessPendingMessagesAction>() {
+    public static final Parcelable.Creator<ProcessPendingMessagesAction> CREATOR
+            = new Parcelable.Creator<ProcessPendingMessagesAction>() {
         @Override
         public ProcessPendingMessagesAction createFromParcel(final Parcel in) {
             return new ProcessPendingMessagesAction(in);

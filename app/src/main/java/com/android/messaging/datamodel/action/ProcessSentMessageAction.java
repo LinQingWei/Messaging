@@ -290,8 +290,8 @@ public class ProcessSentMessageAction extends Action {
         super(in);
     }
 
-    public static final Creator<ProcessSentMessageAction> CREATOR
-            = new Creator<ProcessSentMessageAction>() {
+    public static final Parcelable.Creator<ProcessSentMessageAction> CREATOR
+            = new Parcelable.Creator<ProcessSentMessageAction>() {
         @Override
         public ProcessSentMessageAction createFromParcel(final Parcel in) {
             return new ProcessSentMessageAction(in);

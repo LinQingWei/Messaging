@@ -28,10 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A helper utility for creating {@link Uri}s to describe what avatar to fetch or
- * generate and will help verify and extract information from avatar {@link Uri}s.
+ * A helper utility for creating {@link android.net.Uri}s to describe what avatar to fetch or
+ * generate and will help verify and extract information from avatar {@link android.net.Uri}s.
  *
- * There are three types of avatar {@link Uri}.
+ * There are three types of avatar {@link android.net.Uri}.
  *
  * 1) Group Avatars - These are avatars which are used to represent a group conversation. Group
  * avatars uris are basically multiple avatar uri which can be any of the below types but not
@@ -81,7 +81,7 @@ public class AvatarUriUtil {
     private static final String PARAM_SIM_SELECTED = "s";
     private static final String PARAM_SIM_INCOMING = "g";
 
-    public static final Uri DEFAULT_BACKGROUND_AVATAR = new Builder().scheme(SCHEME)
+    public static final Uri DEFAULT_BACKGROUND_AVATAR = new Uri.Builder().scheme(SCHEME)
             .authority(AUTHORITY).appendPath(TYPE_DEFAULT_BACKGROUND_URI).build();
 
     private static final Uri BLANK_SIM_INDICATOR_INCOMING_URI = createSimIconUri("",

@@ -157,8 +157,8 @@ public class AttachmentGridView extends GridView implements
             }
         }
 
-        public static final Creator<SavedState> CREATOR =
-                new Creator<SavedState>() {
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
             @Override
             public SavedState createFromParcel(final Parcel in) {
                 return new SavedState(in);

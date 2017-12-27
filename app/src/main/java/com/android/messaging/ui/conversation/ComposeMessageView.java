@@ -89,9 +89,9 @@ public class ComposeMessageView extends LinearLayout
         void promptForSelfPhoneNumber();
         boolean isReadyForAction();
         void warnOfMissingActionConditions(final boolean sending,
-                                           final Runnable commandToRunAfterActionConditionResolved);
+                final Runnable commandToRunAfterActionConditionResolved);
         void warnOfExceedingMessageLimit(final boolean showAttachmentChooser,
-                                         boolean tooManyVideos);
+                boolean tooManyVideos);
         void notifyOfAttachmentLoadFailed();
         void showAttachmentChooser();
         boolean shouldShowSubjectEditor();
@@ -198,7 +198,7 @@ public class ComposeMessageView extends LinearLayout
                 }
             }
         });
-        mComposeEditText.setOnClickListener(new OnClickListener() {
+        mComposeEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 if (mHost.shouldHideAttachmentsWhenSimSelectorShown()) {
@@ -298,7 +298,7 @@ public class ComposeMessageView extends LinearLayout
 
         mAttachMediaButton =
                 (ImageButton) findViewById(R.id.attach_media_button);
-        mAttachMediaButton.setOnClickListener(new OnClickListener() {
+        mAttachMediaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View clickView) {
                 // Showing the media picker is treated as starting to compose the message.

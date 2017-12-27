@@ -232,7 +232,7 @@ public final class SmsReceiver extends BroadcastReceiver {
         if (PhoneUtils.getDefault().isSmsEnabled()) {
             final String action = intent.getAction();
             if (OsUtil.isSecondaryUser() &&
-                    (Sms.Intents.SMS_RECEIVED_ACTION.equals(action) ||
+                    (Telephony.Sms.Intents.SMS_RECEIVED_ACTION.equals(action) ||
                             // TODO: update this with the actual constant from Telephony
                             "android.provider.Telephony.MMS_DOWNLOADED".equals(action))) {
                 postNewMessageSecondaryUserNotification();
@@ -264,7 +264,7 @@ public final class SmsReceiver extends BroadcastReceiver {
         final PendingIntent pendingIntent = UIIntents.get()
                 .getPendingIntentForSecondaryUserNewMessageNotification(context);
 
-        final Builder builder = new Builder(context);
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setContentTitle(resources.getString(R.string.secondary_user_new_message_title))
                 .setTicker(resources.getString(R.string.secondary_user_new_message_ticker))
                 .setSmallIcon(R.drawable.ic_sms_light)

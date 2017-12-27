@@ -464,7 +464,7 @@ class SyncCursorPair {
                         context,
                         context.getContentResolver(),
                         Mms.CONTENT_URI,
-                        MmsMessage.getProjection(),
+                        DatabaseMessages.MmsMessage.getProjection(),
                         mmsSelection,
                         null /* selectionArgs */,
                         ORDER_BY_DATE_DESC);

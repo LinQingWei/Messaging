@@ -80,7 +80,7 @@ public class ConversationData extends BindableData {
             return result;
         }
 
-        final Cursor c = new ReversedCursor(
+        final Cursor c = new ConversationData.ReversedCursor(
                 DataModel.get().getDatabase().rawQuery(
                         ConversationMessageData.getConversationMessageIdsQuerySql(),
                         new String [] { conversationId }));
@@ -105,7 +105,7 @@ public class ConversationData extends BindableData {
 
     public interface ConversationDataListener {
         public void onConversationMessagesCursorUpdated(ConversationData data, Cursor cursor,
-                                                        @Nullable ConversationMessageData newestMessage, boolean isSync);
+                @Nullable ConversationMessageData newestMessage, boolean isSync);
         public void onConversationMetadataUpdated(ConversationData data);
         public void closeConversation(String conversationId);
         public void onConversationParticipantDataLoaded(ConversationData data);

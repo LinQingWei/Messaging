@@ -169,7 +169,7 @@ public class BugleApnSettingsLoader implements ApnSettingsLoader {
             if (base == null) {
                 return null;
             }
-            for (final Apn apn : apns) {
+            for (final ApnSettingsLoader.Apn apn : apns) {
                 if (apn instanceof DatabaseApn && ((DatabaseApn) apn).equals(base)) {
                     return null;
                 }
@@ -307,7 +307,7 @@ public class BugleApnSettingsLoader implements ApnSettingsLoader {
     private final Context mContext;
 
     // Cached APNs for subIds
-    private final SparseArray<List<Apn>> mApnsCache;
+    private final SparseArray<List<ApnSettingsLoader.Apn>> mApnsCache;
 
     public BugleApnSettingsLoader(final Context context) {
         mContext = context;
@@ -315,10 +315,10 @@ public class BugleApnSettingsLoader implements ApnSettingsLoader {
     }
 
     @Override
-    public List<Apn> get(final String apnName) {
+    public List<ApnSettingsLoader.Apn> get(final String apnName) {
         final int subId = PhoneUtils.getDefault().getEffectiveSubId(
                 ParticipantData.DEFAULT_SELF_SUB_ID);
-        List<Apn> apns;
+        List<ApnSettingsLoader.Apn> apns;
         boolean didLoad = false;
         synchronized (this) {
             apns = mApnsCache.get(subId);
@@ -417,7 +417,7 @@ public class BugleApnSettingsLoader implements ApnSettingsLoader {
         }
         try {
             if (cursor.moveToFirst()) {
-                final Apn apn = BaseApn.from(
+                final ApnSettingsLoader.Apn apn = BaseApn.from(
                         cursor.getString(COLUMN_TYPE),
                         cursor.getString(COLUMN_MMSC),
                         cursor.getString(COLUMN_MMSPROXY),

@@ -29,7 +29,7 @@ import java.util.TreeMap;
 /**
  * This class provides a low-level EXIF parsing API. Given a JPEG format
  * InputStream, the caller can request which IFD's to read via
- * {@link #parse(InputStream, int)} with given options.
+ * {@link #parse(java.io.InputStream, int)} with given options.
  * <p>
  * Below is an example of getting EXIF data from IFD 0 and EXIF IFD using the
  * parser.
@@ -234,7 +234,7 @@ public class ExifParser {
     /**
      * Parses the the given InputStream with the given options
      *
-     * @exception IOException
+     * @exception java.io.IOException
      * @exception ExifInvalidFormatException
      */
     protected static ExifParser parse(InputStream inputStream, int options, ExifInterface iRef)
@@ -246,9 +246,9 @@ public class ExifParser {
      * Parses the the given InputStream with default options; that is, every IFD
      * and thumbnaill will be parsed.
      *
-     * @exception IOException
+     * @exception java.io.IOException
      * @exception ExifInvalidFormatException
-     * @see #parse(InputStream, int)
+     * @see #parse(java.io.InputStream, int)
      */
     protected static ExifParser parse(InputStream inputStream, ExifInterface iRef)
             throws IOException, ExifInvalidFormatException {
@@ -260,7 +260,7 @@ public class ExifParser {
     /**
      * Moves the parser forward and returns the next parsing event
      *
-     * @exception IOException
+     * @exception java.io.IOException
      * @exception ExifInvalidFormatException
      * @see #EVENT_START_OF_IFD
      * @see #EVENT_NEW_TAG
@@ -358,7 +358,7 @@ public class ExifParser {
      * Skips the tags area of current IFD, if the parser is not in the tag area,
      * nothing will happen.
      *
-     * @throws IOException
+     * @throws java.io.IOException
      * @throws ExifInvalidFormatException
      */
     protected void skipRemainingTagsInCurrentIfd() throws IOException, ExifInvalidFormatException {
@@ -427,7 +427,7 @@ public class ExifParser {
      * @see #readLong()
      * @see #readRational()
      * @see #readString(int)
-     * @see #readString(int, Charset)
+     * @see #readString(int, java.nio.charset.Charset)
      */
     protected ExifTag getTag() {
         return mTag;

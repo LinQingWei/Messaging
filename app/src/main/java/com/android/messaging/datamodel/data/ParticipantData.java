@@ -554,8 +554,8 @@ public class ParticipantData implements Parcelable {
         dest.writeString(mSubscriptionName);
     }
 
-    public static final Creator<ParticipantData> CREATOR
-    = new Creator<ParticipantData>() {
+    public static final Parcelable.Creator<ParticipantData> CREATOR
+    = new Parcelable.Creator<ParticipantData>() {
         @Override
         public ParticipantData createFromParcel(final Parcel in) {
             return new ParticipantData(in);

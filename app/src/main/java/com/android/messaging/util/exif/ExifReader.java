@@ -40,7 +40,7 @@ class ExifReader {
      * {@link ExifData}.
      *
      * @throws ExifInvalidFormatException
-     * @throws IOException
+     * @throws java.io.IOException
      */
     protected ExifData read(InputStream inputStream) throws ExifInvalidFormatException,
             IOException {

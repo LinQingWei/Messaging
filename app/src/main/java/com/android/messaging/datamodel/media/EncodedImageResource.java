@@ -28,10 +28,10 @@ import java.util.List;
 
 /**
  * A cache-facing image resource that's much more compact than the raw Bitmap objects stored in
- * {@link DecodedImageResource}.
+ * {@link com.android.messaging.datamodel.media.DecodedImageResource}.
  *
  * This resource is created from a regular Bitmap-based ImageResource before being pushed to
- * {@link MediaCache}, if the image request
+ * {@link com.android.messaging.datamodel.media.MediaCache}, if the image request
  * allows for resource encoding/compression.
  *
  * During resource retrieval on cache hit,

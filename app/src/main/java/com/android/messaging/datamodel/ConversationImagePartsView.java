@@ -29,7 +29,7 @@ import com.android.messaging.util.ContentType;
  * View for the image parts for the conversation. It is used to provide the photoviewer with a
  * a data source for all the photos in a conversation, so that the photoviewer can support paging
  * through all the photos of the conversation. The columns of the view are a superset of
- * {@link PhotoViewColumns}.
+ * {@link com.android.ex.photo.provider.PhotoContract.PhotoViewColumns}.
  */
 public class ConversationImagePartsView {
     private static final String VIEW_NAME = "conversation_image_parts_view";

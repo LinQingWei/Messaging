@@ -681,7 +681,7 @@ class CameraManager implements FocusOverlayManager.Listener {
         // The clockwise rotation angle relative to the orientation of the camera. This affects
         // pictures returned by the camera in Camera.PictureCallback.
         int rotation;
-        if (mCameraInfo.facing == CameraInfo.CAMERA_FACING_FRONT) {
+        if (mCameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             orientation = (mCameraInfo.orientation + degrees) % 360;
             rotation = orientation;
             // compensate the mirror but only for orientation

@@ -53,7 +53,7 @@ public class PieRenderer extends OverlayRenderer
     private static final int STATE_PIE = 8;
 
     private Runnable mDisappear = new Disappear();
-    private AnimationListener mEndAction = new EndAction();
+    private Animation.AnimationListener mEndAction = new EndAction();
     private static final int SCALING_UP_TIME = 600;
     private static final int SCALING_DOWN_TIME = 100;
     private static final int DISAPPEAR_TIMEOUT = 200;
@@ -747,7 +747,7 @@ public class PieRenderer extends OverlayRenderer
         update();
     }
 
-    private class EndAction implements AnimationListener {
+    private class EndAction implements Animation.AnimationListener {
         @Override
         public void onAnimationEnd(Animation animation) {
             // Keep the focus indicator for some time.

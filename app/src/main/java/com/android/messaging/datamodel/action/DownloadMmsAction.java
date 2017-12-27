@@ -52,13 +52,13 @@ public class DownloadMmsAction extends Action implements Parcelable {
     public interface DownloadMmsActionListener {
         @RunsOnMainThread
         abstract void onDownloadMessageStarting(final ActionMonitor monitor,
-                                                final Object data, final MessageData message);
+                final Object data, final MessageData message);
         @RunsOnMainThread
         abstract void onDownloadMessageSucceeded(final ActionMonitor monitor,
-                                                 final Object data, final MessageData message);
+                final Object data, final MessageData message);
         @RunsOnMainThread
         abstract void onDownloadMessageFailed(final ActionMonitor monitor,
-                                              final Object data, final MessageData message);
+                final Object data, final MessageData message);
     }
 
     /**
@@ -320,8 +320,8 @@ public class DownloadMmsAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<DownloadMmsAction> CREATOR
-            = new Creator<DownloadMmsAction>() {
+    public static final Parcelable.Creator<DownloadMmsAction> CREATOR
+            = new Parcelable.Creator<DownloadMmsAction>() {
         @Override
         public DownloadMmsAction createFromParcel(final Parcel in) {
             return new DownloadMmsAction(in);

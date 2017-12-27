@@ -128,8 +128,8 @@ public class UpdateDestinationBlockedAction extends Action {
         super(in);
     }
 
-    public static final Creator<UpdateDestinationBlockedAction> CREATOR
-            = new Creator<UpdateDestinationBlockedAction>() {
+    public static final Parcelable.Creator<UpdateDestinationBlockedAction> CREATOR
+            = new Parcelable.Creator<UpdateDestinationBlockedAction>() {
         @Override
         public UpdateDestinationBlockedAction createFromParcel(final Parcel in) {
             return new UpdateDestinationBlockedAction(in);

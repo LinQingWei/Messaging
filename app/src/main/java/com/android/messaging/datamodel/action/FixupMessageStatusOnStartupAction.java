@@ -94,8 +94,8 @@ public class FixupMessageStatusOnStartupAction extends Action implements Parcela
         super(in);
     }
 
-    public static final Creator<FixupMessageStatusOnStartupAction> CREATOR
-            = new Creator<FixupMessageStatusOnStartupAction>() {
+    public static final Parcelable.Creator<FixupMessageStatusOnStartupAction> CREATOR
+            = new Parcelable.Creator<FixupMessageStatusOnStartupAction>() {
         @Override
         public FixupMessageStatusOnStartupAction createFromParcel(final Parcel in) {
             return new FixupMessageStatusOnStartupAction(in);

@@ -73,8 +73,8 @@ public class UpdateConversationArchiveStatusAction extends Action {
         super(in);
     }
 
-    public static final Creator<UpdateConversationArchiveStatusAction> CREATOR
-            = new Creator<UpdateConversationArchiveStatusAction>() {
+    public static final Parcelable.Creator<UpdateConversationArchiveStatusAction> CREATOR
+            = new Parcelable.Creator<UpdateConversationArchiveStatusAction>() {
         @Override
         public UpdateConversationArchiveStatusAction createFromParcel(final Parcel in) {
             return new UpdateConversationArchiveStatusAction(in);

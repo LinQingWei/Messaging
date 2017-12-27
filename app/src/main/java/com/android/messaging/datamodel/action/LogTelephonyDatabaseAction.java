@@ -133,8 +133,8 @@ public class LogTelephonyDatabaseAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<LogTelephonyDatabaseAction> CREATOR
-            = new Creator<LogTelephonyDatabaseAction>() {
+    public static final Parcelable.Creator<LogTelephonyDatabaseAction> CREATOR
+            = new Parcelable.Creator<LogTelephonyDatabaseAction>() {
         @Override
         public LogTelephonyDatabaseAction createFromParcel(final Parcel in) {
             return new LogTelephonyDatabaseAction(in);

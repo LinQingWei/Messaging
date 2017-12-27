@@ -126,7 +126,7 @@ public class ViewPagerTabs extends HorizontalScrollView implements ViewPager.OnP
 
         mTabStrip = new ViewPagerTabStrip(context);
         addView(mTabStrip,
-                new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
+                new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
         a.recycle();
 
         // enable shadow casting from view bounds

@@ -44,11 +44,11 @@ public class GetOrCreateConversationAction extends Action implements Parcelable 
     public interface GetOrCreateConversationActionListener {
         @RunsOnMainThread
         abstract void onGetOrCreateConversationSucceeded(final ActionMonitor monitor,
-                                                         final Object data, final String conversationId);
+                final Object data, final String conversationId);
 
         @RunsOnMainThread
         abstract void onGetOrCreateConversationFailed(final ActionMonitor monitor,
-                                                      final Object data);
+                final Object data);
     }
 
     public static GetOrCreateConversationActionMonitor getOrCreateConversation(
@@ -153,8 +153,8 @@ public class GetOrCreateConversationAction extends Action implements Parcelable 
         super(in);
     }
 
-    public static final Creator<GetOrCreateConversationAction> CREATOR
-            = new Creator<GetOrCreateConversationAction>() {
+    public static final Parcelable.Creator<GetOrCreateConversationAction> CREATOR
+            = new Parcelable.Creator<GetOrCreateConversationAction>() {
         @Override
         public GetOrCreateConversationAction createFromParcel(final Parcel in) {
             return new GetOrCreateConversationAction(in);

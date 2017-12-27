@@ -460,8 +460,8 @@ public class InsertNewMessageAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<InsertNewMessageAction> CREATOR
-            = new Creator<InsertNewMessageAction>() {
+    public static final Parcelable.Creator<InsertNewMessageAction> CREATOR
+            = new Parcelable.Creator<InsertNewMessageAction>() {
         @Override
         public InsertNewMessageAction createFromParcel(final Parcel in) {
             return new InsertNewMessageAction(in);

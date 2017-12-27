@@ -108,8 +108,8 @@ public class ResendMessageAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<ResendMessageAction> CREATOR
-            = new Creator<ResendMessageAction>() {
+    public static final Parcelable.Creator<ResendMessageAction> CREATOR
+            = new Parcelable.Creator<ResendMessageAction>() {
         @Override
         public ResendMessageAction createFromParcel(final Parcel in) {
             return new ResendMessageAction(in);

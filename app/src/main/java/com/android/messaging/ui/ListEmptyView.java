@@ -63,8 +63,8 @@ public class ListEmptyView extends LinearLayout {
     public void setIsVerticallyCentered(final boolean isVerticallyCentered) {
         int gravity =
                 isVerticallyCentered ? Gravity.CENTER : Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-        ((LayoutParams) mEmptyImageHint.getLayoutParams()).gravity = gravity;
-        ((LayoutParams) mEmptyTextHint.getLayoutParams()).gravity = gravity;
+        ((LinearLayout.LayoutParams) mEmptyImageHint.getLayoutParams()).gravity = gravity;
+        ((LinearLayout.LayoutParams) mEmptyTextHint.getLayoutParams()).gravity = gravity;
         getLayoutParams().height =
                 isVerticallyCentered ? LayoutParams.WRAP_CONTENT : LayoutParams.MATCH_PARENT;
         requestLayout();

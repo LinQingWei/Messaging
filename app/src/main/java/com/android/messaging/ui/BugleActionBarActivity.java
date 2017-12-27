@@ -214,8 +214,9 @@ public class BugleActionBarActivity extends AppCompatActivity implements ImeUtil
     @Override
     public ActionMode startActionMode(final ActionMode.Callback callback) {
         mActionMode = new CustomActionMode(callback);
-        //*/ freeme.linqingwei, 20171213. redesign conversation list.
-        mActionMode.setCustomView(getActionModeView());
+        //*/ Way Lin, 20171213. redesign conversation list.
+        mActionModeView = initActionModeView();
+        mActionMode.setCustomView(mActionModeView);
         //*/
         supportInvalidateOptionsMenu();
         invalidateActionBar();
@@ -263,24 +264,11 @@ public class BugleActionBarActivity extends AppCompatActivity implements ImeUtil
 
     protected void updateActionBar(final ActionBar actionBar) {
         actionBar.setHomeAsUpIndicator(null);
-        //*/ freeme.linqingwei, 20171213. redesign conversation list.
+        //*/ Way Lin, 20171213. redesign conversation list.
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayShowCustomEnabled(false);
         //*/
     }
-
-    //*/ freeme.linqingwei, 20171213. redesign conversation list.
-    private View mActionModeView;
-
-    private View getActionModeView() {
-        if (mActionModeView == null) {
-            mActionModeView = LayoutInflater.from(this)
-                    .inflate(R.layout.freeme_layout_action_mode, null);
-        }
-
-        return mActionModeView;
-    }
-    //*/
 
     /**
      * Custom ActionMode implementation which allows us to just replace the contents of the main
@@ -364,15 +352,8 @@ public class BugleActionBarActivity extends AppCompatActivity implements ImeUtil
         }
 
         public void updateActionBar(final ActionBar actionBar) {
-            //*/ freeme.linqingwei, 20171213. redesign conversation list.
-            actionBar.setDisplayShowHomeEnabled(false);
-            actionBar.setDisplayHomeAsUpEnabled(false);
-            actionBar.setDisplayShowTitleEnabled(false);
-            actionBar.setDisplayShowCustomEnabled(true);
-            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-                    ActionBar.LayoutParams.MATCH_PARENT,
-                    ActionBar.LayoutParams.MATCH_PARENT);
-            actionBar.setCustomView(getCustomView(), lp);
+            //*/ Way Lin, 20171213. redesign conversation list.
+            setupActionMode(actionBar);
             /*/
             actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP);
             actionBar.setDisplayShowTitleEnabled(false);
@@ -385,4 +366,33 @@ public class BugleActionBarActivity extends AppCompatActivity implements ImeUtil
             actionBar.show();
         }
     }
+
+    //*/ Way Lin, 20171213. redesign conversation list.
+    private View mActionModeView;
+
+    protected View initActionModeView() {
+        return null;
+    }
+
+    public View getActionModeView() {
+        View customView = null;
+        if (mActionMode != null) {
+            customView = mActionMode.getCustomView();
+        }
+
+        if (customView == null) {
+            customView = mActionModeView;
+        }
+
+        return customView;
+    }
+
+    protected void setupActionMode(final ActionBar actionBar) {
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(false);
+        mActionMode.getCallback().onPrepareActionMode(mActionMode, mActionBarMenu);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_cancel_small_dark);
+    }
+    //*/
 }

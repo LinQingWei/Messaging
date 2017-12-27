@@ -24,15 +24,18 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v4.text.BidiFormatter;
 import android.support.v4.text.TextDirectionHeuristicsCompat;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
-import android.view.ContextMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLayoutChangeListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,14 +43,11 @@ import android.widget.TextView;
 import com.android.messaging.Factory;
 import com.android.messaging.R;
 import com.android.messaging.annotation.VisibleForAnimation;
-import com.android.messaging.datamodel.MessagingContentProvider;
 import com.android.messaging.datamodel.action.UpdateConversationArchiveStatusAction;
 import com.android.messaging.datamodel.data.ConversationListItemData;
 import com.android.messaging.datamodel.data.MessageData;
 import com.android.messaging.datamodel.media.UriImageRequestDescriptor;
 import com.android.messaging.sms.MmsUtils;
-import com.android.messaging.ui.AsyncImageView;
-import com.android.messaging.ui.AudioAttachmentView;
 import com.android.messaging.ui.ContactIconView;
 import com.android.messaging.ui.SnackBar;
 import com.android.messaging.ui.SnackBarInteraction;
@@ -86,8 +86,12 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
                                         final Uri photosUri);
         void startFullScreenVideoViewer(final Uri videoUri);
         boolean isSelectionMode();
+        //*/ Way Lin, 20171228. redesign conversation list.
+        boolean isDefaultSmsApp();
+        //*/
     }
 
+    /*/ Way Lin, 20171228. redesign conversation list.
     private final OnClickListener fullScreenPreviewClickListener = new OnClickListener() {
         @Override
         public void onClick(final View v) {
@@ -111,6 +115,7 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
             }
         }
     };
+    //*/
 
     private final ConversationListItemData mData;
 
@@ -119,18 +124,26 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
     private ViewGroup mCrossSwipeBackground;
     private ViewGroup mSwipeableContent;
     private TextView mConversationNameView;
+    /*/ Way Lin, 20171228. redesign conversation list.
     private ImageView mWorkProfileIconView;
+    //*/
     private TextView mSnippetTextView;
     private TextView mSubjectTextView;
     private TextView mTimestampTextView;
     private ContactIconView mContactIconView;
+    //*/ Way Lin, 20171225. redesign conversation list.
+    private CheckBox mContactCheckmarkView;
+    /*/
     private ImageView mContactCheckmarkView;
     private ImageView mNotificationBellView;
     private ImageView mFailedStatusIconView;
+    //*/
     private ImageView mCrossSwipeArchiveLeftImageView;
     private ImageView mCrossSwipeArchiveRightImageView;
+    /*/ Way Lin, 20171225. redesign conversation list.
     private AsyncImageView mImagePreviewView;
     private AudioAttachmentView mAudioAttachmentView;
+    //*/
     private HostInterface mHostInterface;
 
     public ConversationListItemView(final Context context, final AttributeSet attrs) {
@@ -146,18 +159,28 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
         mSwipeableContent = (ViewGroup) findViewById(R.id.swipeableContent);
         mConversationNameView = (TextView) findViewById(R.id.conversation_name);
         mSnippetTextView = (TextView) findViewById(R.id.conversation_snippet);
+        //*/ Way Lin, 20171225. redesign conversation list.
+        mUnreadView = (TextView) findViewById(R.id.conversation_unread);
+        /*/
         mSubjectTextView = (TextView) findViewById(R.id.conversation_subject);
         mWorkProfileIconView = (ImageView) findViewById(R.id.work_profile_icon);
+        //*/
         mTimestampTextView = (TextView) findViewById(R.id.conversation_timestamp);
         mContactIconView = (ContactIconView) findViewById(R.id.conversation_icon);
+        //*/ Way Lin, 20171225. redesign conversation list.
+        mContactCheckmarkView = (CheckBox) findViewById(R.id.conversation_checkmark);
+        /*/
         mContactCheckmarkView = (ImageView) findViewById(R.id.conversation_checkmark);
         mNotificationBellView = (ImageView) findViewById(R.id.conversation_notification_bell);
         mFailedStatusIconView = (ImageView) findViewById(R.id.conversation_failed_status_icon);
+        //*/
         mCrossSwipeArchiveLeftImageView = (ImageView) findViewById(R.id.crossSwipeArchiveIconLeft);
         mCrossSwipeArchiveRightImageView =
                 (ImageView) findViewById(R.id.crossSwipeArchiveIconRight);
+        /*/ Way Lin, 20171225. redesign conversation list.
         mImagePreviewView = (AsyncImageView) findViewById(R.id.conversation_image_preview);
         mAudioAttachmentView = (AudioAttachmentView) findViewById(R.id.audio_attachment_view);
+        //*/
         mConversationNameView.addOnLayoutChangeListener(this);
         mSnippetTextView.addOnLayoutChangeListener(this);
 
@@ -181,16 +204,25 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
             setConversationName();
         } else if (v == mSnippetTextView) {
             setSnippet();
+        /*/ Way Lin, 20171228. redesign conversation list.
         } else if (v == mSubjectTextView) {
             setSubject();
+        //*/
         }
     }
 
+    /*/ Way Lin, 20171228. redesign conversation list.
     private void setWorkProfileIcon() {
         mWorkProfileIconView.setVisibility(mData.isEnterprise() ? View.VISIBLE : View.GONE);
     }
+    //*/
 
     private void setConversationName() {
+        //*/ Way Lin, 20171228. redesign conversation list.
+        final int notificationBellResId = mData.getNotificationEnabled() ?
+                0 : R.drawable.ic_notifications_off_small_light;
+        mConversationNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0, notificationBellResId, 0);
+        /*/
         if (mData.getIsRead() || mData.getShowDraft()) {
             mConversationNameView.setTextColor(mListItemReadColor);
             mConversationNameView.setTypeface(mListItemReadTypeface);
@@ -198,6 +230,7 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
             mConversationNameView.setTextColor(mListItemUnreadColor);
             mConversationNameView.setTypeface(mListItemUnreadTypeface);
         }
+        //*/
 
         final String conversationName = mData.getName();
 
@@ -233,6 +266,7 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
         return sPlusNString;
     }
 
+    /*/ Way Lin, 20171228. redesign conversation list.
     private void setSubject() {
         final String subjectText = mData.getShowDraft() ?
                 mData.getDraftSubject() :
@@ -245,9 +279,38 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
             mSubjectTextView.setVisibility(GONE);
         }
     }
+    //*/
 
     private void setSnippet() {
+        //*/ Way Lin, 20171228. redesign conversation list.
+        String snippet = getSnippetText();
+        SpannableStringBuilder buf = new SpannableStringBuilder();
+
+        int leftDrawable = 0;
+        if (mData.getShowDraft()
+                || mData.getMessageStatus() == MessageData.BUGLE_STATUS_OUTGOING_DRAFT
+                // also check for unknown status which we get because sometimes the conversation
+                // row is left with a latest_message_id of a no longer existing message and
+                // therefore the join values come back as null (or in this case zero).
+                || mData.getMessageStatus() == MessageData.BUGLE_STATUS_UNKNOWN) {
+            final int start = buf.length();
+            buf.append("[")
+                    .append(getResources().getString(R.string.conversation_list_item_view_draft_message))
+                    .append("]");
+            final int end = buf.length();
+            buf.setSpan(new ForegroundColorSpan(getResources()
+                            .getColor(R.color.freeme_def_message_draft_flag_color)),
+                    start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        } else if (mData.getIsFailedStatus() && mHostInterface.isDefaultSmsApp()) {
+            leftDrawable = R.drawable.ic_failed_status_red;
+        }
+
+        mSnippetTextView.setCompoundDrawablesWithIntrinsicBounds(leftDrawable, 0, 0, 0);
+        buf.append(snippet);
+        mSnippetTextView.setText(buf);
+        /*/
         mSnippetTextView.setText(getSnippetText());
+        //*/
     }
 
     // Resource Ids of content descriptions prefixes for different message status.
@@ -369,14 +432,44 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
         resetAnimatingState();
 
         mSwipeableContainer.setOnClickListener(this);
-        //*/ freeme.linqingwei, 20171213. redesign conversation list.
-        mSwipeableContainer.setOnCreateContextMenuListener(mOnCreateContextMenuListener);
-        /*/
         mSwipeableContainer.setOnLongClickListener(this);
-        //*/
 
         final Resources resources = getContext().getResources();
 
+        //*/ Way Lin, 20171228. redesign conversation list.
+        setSnippet();
+        setConversationName();
+
+        // unread count
+        final boolean hasUnread = !mData.getIsRead();
+        int unreadCount = 0;
+        if (hasUnread) {
+            unreadCount = mData.getUnreadCount();
+        }
+        setConversationUnreadView(unreadCount);
+
+        setContentDescription(buildContentDescription(resources, mData,
+                mConversationNameView.getPaint()));
+
+        mTimestampTextView.setText(mData.getFormattedTimestamp());
+
+        final boolean isSelected = mHostInterface.isConversationSelected(mData.getConversationId());
+        setSelected(isSelected);
+
+        Uri iconUri = null;
+        if (mData.getIcon() != null) {
+            iconUri = Uri.parse(mData.getIcon());
+        }
+        mContactIconView.setImageResourceUri(iconUri, mData.getParticipantContactId(),
+                mData.getParticipantLookupKey(), mData.getOtherParticipantNormalizedDestination());
+        final boolean isSelectionMode = mHostInterface.isSelectionMode();
+        mContactIconView.setOnLongClickListener(this);
+        mContactIconView.setClickable(!isSelectionMode);
+        mContactIconView.setLongClickable(!isSelectionMode);
+
+        mContactCheckmarkView.setChecked(isSelectionMode && isSelected);
+        mContactCheckmarkView.setVisibility(isSelectionMode ? VISIBLE : GONE);
+        /*/
         int color;
         final int maxLines;
         final Typeface typeface;
@@ -496,9 +589,9 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
                 R.dimen.conversation_list_image_preview_size);
         mImagePreviewView.setImageResourceId(
                 new UriImageRequestDescriptor(previewImageUri, imageSize, imageSize,
-                        true /* allowCompression */, false /* isStatic */, false /*cropToCircle*/,
-                        ImageUtils.DEFAULT_CIRCLE_BACKGROUND_COLOR /* circleBackgroundColor */,
-                        ImageUtils.DEFAULT_CIRCLE_STROKE_COLOR /* circleStrokeColor */));
+                        true / * allowCompression * /, false / * isStatic * /, false / *cropToCircle* /,
+                        ImageUtils.DEFAULT_CIRCLE_BACKGROUND_COLOR / * circleBackgroundColor * /,
+                        ImageUtils.DEFAULT_CIRCLE_STROKE_COLOR / * circleStrokeColor * /));
         mImagePreviewView.setOnLongClickListener(this);
         mImagePreviewView.setVisibility(previewImageVisibility);
         mImagePreviewView.setOnClickListener(previewClickListener);
@@ -507,6 +600,7 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
 
         final int notificationBellVisiblity = mData.getNotificationEnabled() ? GONE : VISIBLE;
         mNotificationBellView.setVisibility(notificationBellVisiblity);
+        //*/
     }
 
     public boolean isSwipeAnimatable() {
@@ -615,7 +709,11 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
     }
 
     private boolean processClick(final View v, final boolean isLongClick) {
+        //*/ Way Lin, 20171228. redesign conversation list.
+        Assert.isTrue(v == mSwipeableContainer || v == mContactIconView);
+        /*/
         Assert.isTrue(v == mSwipeableContainer || v == mContactIconView || v == mImagePreviewView);
+        //*/
         Assert.notNull(mData.getName());
 
         if (mHostInterface != null) {
@@ -634,8 +732,18 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
     }
 
     private String getSnippetText() {
+        //*/ Way Lin, 20171228. redesign conversation list.
+        final boolean showDraft = mData.getShowDraft();
+        final String subjectText = getSubject(showDraft);
+        if (!TextUtils.isEmpty(subjectText)) {
+            return subjectText;
+        }
+        String snippetText = showDraft ?
+                mData.getDraftSnippetText() : mData.getSnippetText();
+        /*/
         String snippetText = mData.getShowDraft() ?
                 mData.getDraftSnippetText() : mData.getSnippetText();
+        //*/
         final String previewContentType = mData.getShowDraft() ?
                 mData.getDraftPreviewContentType() : mData.getPreviewContentType();
         if (TextUtils.isEmpty(snippetText)) {
@@ -654,20 +762,41 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
         return snippetText;
     }
 
-    //*/ freeme.linqingwei, 20171213. redesign conversation list.
-    public static final int MENU_VIEW_THREAD          = 0;
-    public static final int MENU_DELETE_THREAD        = 1;
-    public static final int MENU_TOP_THREAD           = 2;
-    public static final int MENU_NOTIFY_THREAD        = 3;
-
-    private OnCreateContextMenuListener mOnCreateContextMenuListener = new OnCreateContextMenuListener() {
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle(mData.getName());
-            menu.add(0, MENU_VIEW_THREAD, MENU_VIEW_THREAD, R.string.menu_view);
-            menu.add(0, MENU_DELETE_THREAD, MENU_VIEW_THREAD, R.string.action_delete);
+    //*/ Way Lin, 20171225. redesign conversation list.
+    private String getSubject(boolean showDraft) {
+        String subjectText = showDraft ?
+                mData.getDraftSubject() :
+                MmsUtils.cleanseMmsSubject(getContext().getResources(), mData.getSubject());
+        if (!TextUtils.isEmpty(subjectText)) {
+            final String subjectPrepend = getResources().getString(R.string.subject_label);
+            subjectText = TextUtils.concat(subjectPrepend, subjectText).toString();
         }
-    };
 
+        return subjectText;
+    }
+
+    private TextView mUnreadView;
+    private static final int MAX_UNREAD_MESSAGES_COUNT = 99;
+    private static final String MAX_UNREAD_MESSAGES_STRING = "99+";
+
+    private String formatUnreadCount(int unreadCount) {
+        String unreadString;
+        if (unreadCount > MAX_UNREAD_MESSAGES_COUNT) {
+            unreadString = MAX_UNREAD_MESSAGES_STRING;
+        } else {
+            unreadString = String.valueOf(unreadCount);
+        }
+
+        return unreadString;
+    }
+
+    private void setConversationUnreadView(final int unreadCount) {
+        if (unreadCount > 0) {
+            mUnreadView.setText(formatUnreadCount(unreadCount));
+            mUnreadView.setVisibility(VISIBLE);
+        } else {
+            mUnreadView.setVisibility(GONE);
+        }
+    }
     //*/
 }

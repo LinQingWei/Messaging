@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="freeme_conversation_name_width_max">168dp</dimen>
+    <color name="freeme_def_message_unread_flag_color">#FF3E3E</color>
+    <dimen name="freeme_def_message_unread_flag_size">16dp</dimen>
+    <color name="freeme_def_message_draft_flag_color">#05b459</color>
+</resources>

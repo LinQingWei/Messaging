@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/primary_color"
+    android:gravity="center"
+    android:minHeight="@dimen/freeme_bottom_layout_min_height"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/action_delete"
+        style="@style/FreemeBottomLayoutTextButton"
+        android:drawableTop="@drawable/ic_delete_small_dark"
+        android:text="@string/delete_conversation_confirmation_button" />
+
+    <TextView
+        android:id="@+id/action_archive"
+        style="@style/FreemeBottomLayoutTextButton"
+        android:drawableTop="@drawable/ic_archive_small_dark"
+        android:text="@string/action_archive" />
+
+    <TextView
+        android:id="@+id/action_unarchive"
+        style="@style/FreemeBottomLayoutTextButton"
+        android:drawableTop="@drawable/ic_archive_undo_small_dark"
+        android:text="@string/action_unarchive" />
+
+    <TextView
+        android:id="@+id/action_notification_off"
+        style="@style/FreemeBottomLayoutTextButton"
+        android:drawableTop="@drawable/ic_notifications_off_dark"
+        android:text="@string/action_notification_off" />
+
+    <TextView
+        android:id="@+id/action_notification_on"
+        style="@style/FreemeBottomLayoutTextButton"
+        android:drawableTop="@drawable/ic_notifications_on_dark"
+        android:text="@string/action_notification_on" />
+
+    <TextView
+        android:id="@+id/action_add_contact"
+        style="@style/FreemeBottomLayoutTextButton"
+        android:drawableTop="@drawable/ic_person_add_dark"
+        android:text="@string/action_add_contact" />
+
+    <TextView
+        android:id="@+id/action_block"
+        style="@style/FreemeBottomLayoutTextButton"
+        android:drawableTop="@drawable/ic_dnd_on_dark"
+        android:text="@string/action_block" />
+</LinearLayout>

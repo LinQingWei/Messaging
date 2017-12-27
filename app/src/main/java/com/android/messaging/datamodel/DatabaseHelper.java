@@ -22,6 +22,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import com.android.messaging.BugleApplication;
 import com.android.messaging.R;
@@ -46,7 +47,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "bugle_db";
 
     private static final int getDatabaseVersion(final Context context) {
+        //*/ Way Lin, 20171226. redesign conversation list.
+        return Integer.parseInt(context.getResources().getString(R.string.freeme_database_version));
+        /*/
         return Integer.parseInt(context.getResources().getString(R.string.database_version));
+        //*/
     }
 
     /** Table containing names of all other tables and views */
@@ -152,6 +157,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // A conversation is enterprise if one of the participant is a enterprise contact.
         public static final String IS_ENTERPRISE = "IS_ENTERPRISE";
+        //*/ Way Lin, 20171226. redesign conversation list.
+        public static final String SMS_UNREAD_COUNT = "sms_unread_count";
+        //*/
     }
 
     // Conversation table SQL
@@ -186,7 +194,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + ConversationColumns.NOTIFICATION_VIBRATION + " INT DEFAULT(1), "
                     + ConversationColumns.INCLUDE_EMAIL_ADDRESS + " INT DEFAULT(0), "
                     + ConversationColumns.SMS_SERVICE_CENTER + " TEXT ,"
+                    //*/ Way Lin, 20171228. redesign conversation list.
+                    + ConversationColumns.IS_ENTERPRISE + " INT DEFAULT(0), "
+                    + ConversationColumns.SMS_UNREAD_COUNT + " INT DEFAULT(0) "
+                    /*/
                     + ConversationColumns.IS_ENTERPRISE + " INT DEFAULT(0)"
+                    //*/
                     + ");";
 
     private static final String CONVERSATIONS_TABLE_SMS_THREAD_ID_INDEX_SQL =
@@ -203,6 +216,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "CREATE INDEX index_" + CONVERSATIONS_TABLE + "_" + ConversationColumns.SORT_TIMESTAMP
             + " ON " +  CONVERSATIONS_TABLE
             + "(" + ConversationColumns.SORT_TIMESTAMP + ")";
+
+    //*/ Way Lin, 20171226. redesign conversation list.
+    private static final String INDEX_CONVERSATIONS_SMS_UNREAD_COUNT = "index_" + CONVERSATIONS_TABLE
+            + "_" + ConversationColumns.SMS_UNREAD_COUNT;
+
+    private static final String CONVERSATIONS_TABLE_SMS_UNREAD_COUNT_INDEX_SQL =
+            "CREATE INDEX " + INDEX_CONVERSATIONS_SMS_UNREAD_COUNT
+                    + " ON " +  CONVERSATIONS_TABLE
+                    + "(" + ConversationColumns.SMS_UNREAD_COUNT + ")";
+    //*/
 
     // Messages table schema
     public static class MessageColumns implements BaseColumns {
@@ -376,6 +399,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + PartColumns.MESSAGE_ID + " = NEW." + MessageColumns._ID
             + "; END;";
 
+    //*/ Way Lin, 20171226. redesign conversation list.
+    private static final String TRIGGER_UPDATE_CONVERSATIONS_SMS_UNREAD_COUNT = "trigger_update" + CONVERSATIONS_TABLE
+            + "_" + ConversationColumns.SMS_UNREAD_COUNT;
+
+    private static final String UPDATE_CONVERSATIONS_UNREAD_COUNT = " UPDATE " + CONVERSATIONS_TABLE
+            + " SET " + ConversationColumns.SMS_UNREAD_COUNT
+            + " = (SELECT count(" + MessageColumns._ID + ") FROM " + MESSAGES_TABLE
+            + " WHERE " + MessageColumns.CONVERSATION_ID + " = NEW." + MessageColumns.CONVERSATION_ID
+            + " AND " + MessageColumns.READ + " =0 AND " + MessageColumns.STATUS + ">=" + MessageData.BUGLE_STATUS_INCOMING_COMPLETE
+            + ") WHERE " + CONVERSATIONS_TABLE + "." + ConversationColumns._ID + " = NEW." + MessageColumns.CONVERSATION_ID;
+
+    public static final String CREATE_CONVERSATIONS_UNREAD_COUNT_TRIGGER_UPDATE_SQL =
+            "CREATE TRIGGER " + TRIGGER_UPDATE_CONVERSATIONS_SMS_UNREAD_COUNT
+                    + " AFTER UPDATE OF " + MessageColumns.READ + " ON " + MESSAGES_TABLE
+                    + " BEGIN " + UPDATE_CONVERSATIONS_UNREAD_COUNT
+                    + "; END;";
+
+    private static final String TRIGGER_INSERT_CONVERSATIONS_SMS_UNREAD_COUNT = "trigger_insert" + CONVERSATIONS_TABLE
+            + "_" + ConversationColumns.SMS_UNREAD_COUNT;
+
+    public static final String CREATE_CONVERSATIONS_UNREAD_COUNT_TRIGGER_INSERT_SQL =
+            "CREATE TRIGGER " + TRIGGER_INSERT_CONVERSATIONS_SMS_UNREAD_COUNT
+                    + " AFTER INSERT ON " + MESSAGES_TABLE
+                    + " BEGIN " + UPDATE_CONVERSATIONS_UNREAD_COUNT
+                    + "; END;";
+    //*/
+
     // Primary sort index for parts table : by message_id
     private static final String PARTS_TABLE_MESSAGE_INDEX_SQL =
             "CREATE INDEX index_" + PARTS_TABLE + "_message_id ON " + PARTS_TABLE + "("
@@ -546,12 +596,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         MESSAGES_TABLE_STATUS_SEEN_INDEX_SQL,
         PARTS_TABLE_MESSAGE_INDEX_SQL,
         CONVERSATION_PARTICIPANTS_TABLE_CONVERSATION_ID_INDEX_SQL,
+        //*/ Way Lin, 20171226. redesign conversation list.
+        CONVERSATIONS_TABLE_SMS_UNREAD_COUNT_INDEX_SQL,
+        //*/
     };
 
     // List of all our SQL triggers
     private static final String[] CREATE_TRIGGER_SQLS = new String[] {
             CREATE_PARTS_TRIGGER_SQL,
             CREATE_MESSAGES_TRIGGER_SQL,
+            //*/ Way Lin, 20171226. redesign conversation list.
+            CREATE_CONVERSATIONS_UNREAD_COUNT_TRIGGER_INSERT_SQL,
+            CREATE_CONVERSATIONS_UNREAD_COUNT_TRIGGER_UPDATE_SQL,
+            //*/
     };
 
     // List of all our views
@@ -820,4 +877,80 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         mUpgradeHelper.doOnUpgrade(db, oldVersion, newVersion);
     }
+
+    //*/ Way Lin, 20171226. redesign conversation list.
+    public static void upgradeDatabaseToVersion3(final SQLiteDatabase db) {
+        Log.d("DatabaseHelper", "upgradeDatabaseToVersion4");
+        db.execSQL("ALTER TABLE " + CONVERSATIONS_TABLE + " ADD COLUMN " +
+                ConversationColumns.SMS_UNREAD_COUNT + " INTEGER DEFAULT 0");
+
+        rebuildIndex(db,
+                INDEX_CONVERSATIONS_SMS_UNREAD_COUNT,
+                CONVERSATIONS_TABLE_SMS_UNREAD_COUNT_INDEX_SQL);
+
+        rebuildTrigger(db,
+                TRIGGER_INSERT_CONVERSATIONS_SMS_UNREAD_COUNT,
+                CREATE_CONVERSATIONS_UNREAD_COUNT_TRIGGER_INSERT_SQL);
+
+        rebuildTrigger(db,
+                TRIGGER_UPDATE_CONVERSATIONS_SMS_UNREAD_COUNT,
+                CREATE_CONVERSATIONS_UNREAD_COUNT_TRIGGER_UPDATE_SQL);
+
+        rebuildView(db,
+                ConversationListItemData.getConversationListView(),
+                ConversationListItemData.getConversationListViewSql());
+    }
+
+    /**
+     * Drop and rebuild a given index.
+     */
+    static void rebuildIndex(final SQLiteDatabase db, final String indexName,
+                             final String createIndexSql) {
+        dropIndex(db, indexName, true /* throwOnFailure */);
+        db.execSQL(createIndexSql);
+    }
+
+    private static void dropIndex(final SQLiteDatabase db, final String indexName,
+                                  final boolean throwOnFailure) {
+        final String dropPrefix = "DROP INDEX IF EXISTS ";
+        try {
+            db.execSQL(dropPrefix + indexName);
+        } catch (final SQLException ex) {
+            if (LogUtil.isLoggable(LogUtil.BUGLE_TAG, LogUtil.DEBUG)) {
+                LogUtil.d(LogUtil.BUGLE_TAG, "unable to drop index " + indexName + " "
+                        + ex);
+            }
+
+            if (throwOnFailure) {
+                throw ex;
+            }
+        }
+    }
+
+    /**
+     * Drop and rebuild a given trigger.
+     */
+    static void rebuildTrigger(final SQLiteDatabase db, final String triggerName,
+                               final String createTriggerSql) {
+        dropTrigger(db, triggerName, true /* throwOnFailure */);
+        db.execSQL(createTriggerSql);
+    }
+
+    private static void dropTrigger(final SQLiteDatabase db, final String triggerName,
+                                    final boolean throwOnFailure) {
+        final String dropPrefix = "DROP TRIGGER IF EXISTS ";
+        try {
+            db.execSQL(dropPrefix + triggerName);
+        } catch (final SQLException ex) {
+            if (LogUtil.isLoggable(LogUtil.BUGLE_TAG, LogUtil.DEBUG)) {
+                LogUtil.d(LogUtil.BUGLE_TAG, "unable to drop trigger " + triggerName + " "
+                        + ex);
+            }
+
+            if (throwOnFailure) {
+                throw ex;
+            }
+        }
+    }
+    //*/
 }

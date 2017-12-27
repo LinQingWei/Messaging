@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.messaging.ui.conversationlist.ConversationListItemView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/freeme_conversation_list_item_height_min">
+
+    <!-- The background displayed when the conversation is swiped sideways -->
+    <LinearLayout
+        android:id="@+id/crossSwipeBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/swipe_shadow"
+        android:baselineAligned="false"
+        android:gravity="center_vertical|start"
+        android:orientation="horizontal"
+        android:padding="@dimen/conversation_list_item_view_padding"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/crossSwipeArchiveIconLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:gravity="center_vertical|left"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_archive_small_dark"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/crossSwipeArchiveIconRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_archive_small_dark"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/swipeableContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="no">
+
+        <RelativeLayout
+            android:id="@+id/swipeableContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clipToPadding="false"
+            android:duplicateParentState="true"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/conversation_list_item_view_padding"
+            android:paddingStart="@dimen/conversation_list_item_view_padding"
+            android:paddingTop="@dimen/conversation_list_item_view_padding">
+
+            <CheckBox
+                android:id="@+id/conversation_checkmark"
+                style="@style/FreemeNoFocusStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:paddingEnd="@dimen/conversation_list_item_view_padding"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@+id/conversation_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@id/conversation_checkmark"
+                android:paddingEnd="@dimen/conversation_list_item_view_padding">
+
+
+                <com.android.messaging.ui.ContactIconView
+                    android:id="@+id/conversation_icon"
+                    android:layout_width="@dimen/conversation_list_contact_icon_size"
+                    android:layout_height="@dimen/conversation_list_contact_icon_size"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/freeme_common_space_medium"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:contentDescription="@null"
+                    android:importantForAccessibility="no"
+                    app:iconSize="normal" />
+
+
+                <TextView
+                    android:id="@+id/conversation_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_toEndOf="@id/conversation_icon"
+                    android:drawablePadding="4dp"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:maxWidth="@dimen/freeme_conversation_name_width_max"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/conversation_unread"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignTop="@id/conversation_name"
+                    android:background="@drawable/freeme_ic_unread_flag"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:minHeight="@dimen/freeme_def_message_unread_flag_size"
+                    android:minWidth="@dimen/freeme_def_message_unread_flag_size"
+                    android:textColor="@android:color/white"
+                    android:textSize="10sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/conversation_snippet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_below="@id/conversation_name"
+                    android:layout_marginRight="6dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_toEndOf="@id/conversation_icon"
+                    android:layout_toStartOf="@+id/conversation_timestamp"
+                    android:drawablePadding="4dp"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/conversation_timestamp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/conversation_snippet"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@id/conversation_snippet"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </FrameLayout>
+</com.android.messaging.ui.conversationlist.ConversationListItemView>

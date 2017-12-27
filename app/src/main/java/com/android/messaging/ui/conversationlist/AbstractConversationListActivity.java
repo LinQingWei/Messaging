@@ -22,13 +22,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
-import android.view.ContextMenu;
-import android.view.MenuItem;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 
 import com.android.messaging.R;
@@ -45,9 +42,8 @@ import com.android.messaging.ui.UIIntents;
 import com.android.messaging.ui.contact.AddContactsConfirmationDialog;
 import com.android.messaging.ui.conversationlist.ConversationListFragment.ConversationListFragmentHost;
 import com.android.messaging.ui.conversationlist.MultiSelectActionModeCallback.SelectedConversation;
-import com.android.messaging.util.BugleGservices;
-import com.android.messaging.util.BugleGservicesKeys;
 import com.android.messaging.util.DebugUtils;
+import com.android.messaging.util.FreemeUtils;
 import com.android.messaging.util.PhoneUtils;
 import com.android.messaging.util.Trace;
 import com.android.messaging.util.UiUtils;
@@ -91,10 +87,19 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
     }
 
     protected void startMultiSelectActionMode() {
+        //*/ Way Lin, 20171228. redesign conversation list.
+        mModeCallback = new MultiSelectActionModeCallback(this);
+        startActionMode(mModeCallback);
+        mConversationListFragment.dismissFab();
+        /*/
         startActionMode(new MultiSelectActionModeCallback(this));
+        //*/
     }
 
     protected void exitMultiSelectState() {
+        //*/ Way Lin, 20171228. redesign conversation list.
+        mModeCallback = null;
+        //*/
         mConversationListFragment.showFab();
         dismissActionMode();
         mConversationListFragment.updateUi();
@@ -113,16 +118,6 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     }
 
-    //*/ freeme.linqingwei, 20171213. redesign conversation list.
-    @Override
-    public ConversationListAdapter getCurrentAdapter() {
-        if (mConversationListFragment != null) {
-            return mConversationListFragment.getConversationListAdapter();
-        }
-
-        return null;
-    }
-    /*/
     @Override
     public void onActionBarDelete(final Collection<SelectedConversation> conversations) {
         if (!PhoneUtils.getDefault().isDefaultSmsApp()) {
@@ -141,8 +136,8 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
                             }
                         },
                         getString(R.string.requires_default_sms_change_button)),
-                    null / * interactions * /,
-                    null / * placement * /);
+                    null /* interactions */,
+                    null /* placement */);
             return;
         }
 
@@ -215,7 +210,7 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
                 R.string.notification_on_toast_message : R.string.notification_off_toast_message;
         final String message = getResources().getString(textId, 1);
         UiUtils.showSnackBar(this, findViewById(android.R.id.list), message,
-            null / * undoRunnable * /,
+            null /* undoRunnable */,
             SnackBar.Action.SNACK_BAR_UNDO, mConversationListFragment.getSnackBarInteractions());
         exitMultiSelectState();
     }
@@ -252,7 +247,7 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
                         final UpdateDestinationBlockedAction.UpdateDestinationBlockedActionListener
                                 undoListener =
                                         new UpdateDestinationBlockedActionSnackBar(
-                                                context, listView, null / * undoRunnable * /,
+                                                context, listView, null /* undoRunnable */,
                                                 interactions);
                         final Runnable undoRunnable = new Runnable() {
                             @Override
@@ -283,12 +278,9 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
                                     final ConversationListItemData conversationListItemData,
                                     final boolean isLongClick,
                                     final ConversationListItemView conversationView) {
-        //*/ freeme.linqingwei, 20171213. redesign conversation list.
-        /*/
         if (isLongClick && !isInConversationListSelectMode()) {
             startMultiSelectActionMode();
         }
-        //*/
 
         if (isInConversationListSelectMode()) {
             final MultiSelectActionModeCallback multiSelectActionMode =
@@ -324,21 +316,6 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
         DebugUtils.showDebugOptions(this);
     }
 
-    //*/ freeme.linqingwei, 20171213. redesign conversation list.
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.action_delete:
-                startMultiSelectActionMode();
-                return true;
-            default:
-                break;
-        }
-
-        return super.onOptionsItemSelected(menuItem);
-    }
-
-    /*/
     private static class UpdateDestinationBlockedActionSnackBar
             implements UpdateDestinationBlockedAction.UpdateDestinationBlockedActionListener {
         private final Context mContext;
@@ -368,6 +345,53 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
                         SnackBar.Action.SNACK_BAR_UNDO, mInteractions);
             }
         }
+    }
+
+    //*/ Way Lin, 20171228. redesign conversation list.
+    @Override
+    public ConversationListAdapter getCurrentAdapter() {
+        ConversationListAdapter adapter = null;
+        if (mConversationListFragment != null) {
+            adapter = mConversationListFragment.getConversationListAdapter();
+        }
+
+        return adapter;
+    }
+
+    private MultiSelectActionModeCallback mModeCallback;
+
+    @Override
+    public MultiSelectActionModeCallback getActionModeCallback() {
+        return mModeCallback;
+    }
+
+    @Override
+    public void updateActionIcons(MultiSelectActionModeCallback actionModeCallback) {
+        if (mConversationListFragment != null) {
+            mConversationListFragment.updateActionIcons(actionModeCallback);
+        }
+    }
+
+    @Override
+    protected View initActionModeView() {
+        View actionModeView = getActionModeView();
+        if (actionModeView == null) {
+            actionModeView = FreemeUtils.getActionModeView(this, 0);
+        }
+
+        return actionModeView;
+    }
+
+    @Override
+    protected void setupActionMode(ActionBar actionBar) {
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+        final ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                ActionBar.LayoutParams.MATCH_PARENT,
+                ActionBar.LayoutParams.MATCH_PARENT);
+        actionBar.setCustomView(getActionModeView(), lp);
     }
     //*/
 }

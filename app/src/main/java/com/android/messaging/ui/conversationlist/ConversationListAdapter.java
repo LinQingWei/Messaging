@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 
 import com.android.messaging.R;
 import com.android.messaging.ui.CursorRecyclerAdapter;
-import com.android.messaging.ui.conversationlist.ConversationListItemView.HostInterface;
 
 /**
  * Provides an interface to expose Conversation List Cursor data to a UI widget like a ListView.
@@ -59,7 +58,11 @@ public class ConversationListAdapter
         final LayoutInflater layoutInflater = LayoutInflater.from(context);
         final ConversationListItemView itemView =
                 (ConversationListItemView) layoutInflater.inflate(
+                        //*/ Way Lin, 20171228. redesign conversation list.
+                        R.layout.freeme_conversation_list_item_view, null);
+                        /*/
                         R.layout.conversation_list_item_view, null);
+                        //*/
         return new ConversationListViewHolder(itemView);
     }
 

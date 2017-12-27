@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="no_conversations">No conversations</string>
     <string name="select_conversations">Select conversations</string>
     <string name="select_all">Select all</string>
     <string name="deselect_all">Deselect all</string>
@@ -7,6 +8,5 @@
         <item quantity="one"><xliff:g example="1" id="message_count">%d</xliff:g> selected</item>
         <item quantity="other"><xliff:g example="9" id="message_count">%d</xliff:g> selected</item>
     </plurals>
-    <string name="action_delete_conversation">Delete thread</string>
-    <string name="menu_view">View thread</string>
+    <string name="freeme_database_version" translatable="false">3</string>
 </resources>

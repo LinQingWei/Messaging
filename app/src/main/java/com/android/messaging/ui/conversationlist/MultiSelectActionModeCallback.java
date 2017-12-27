@@ -23,7 +23,6 @@ import android.view.ActionMode.Callback;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.messaging.R;
@@ -31,15 +30,13 @@ import com.android.messaging.datamodel.data.ConversationListData;
 import com.android.messaging.datamodel.data.ConversationListItemData;
 import com.android.messaging.util.Assert;
 
+import java.util.Collection;
 import java.util.HashSet;
 
 public class MultiSelectActionModeCallback implements Callback {
     private HashSet<String> mBlockedSet;
 
     public interface Listener {
-        //*/ freeme.linqingwei, 20171213. redesign conversation list.
-        ConversationListAdapter getCurrentAdapter();
-        /*/
         void onActionBarDelete(Collection<SelectedConversation> conversations);
         void onActionBarArchive(Iterable<SelectedConversation> conversations,
                                 boolean isToArchive);
@@ -47,8 +44,11 @@ public class MultiSelectActionModeCallback implements Callback {
                                      boolean isNotificationOn);
         void onActionBarAddContact(final SelectedConversation conversation);
         void onActionBarBlock(final SelectedConversation conversation);
-        //*/
         void onActionBarHome();
+        //*/ Way Lin, 20171228. redesign conversation list.
+        ConversationListAdapter getCurrentAdapter();
+        void updateActionIcons(MultiSelectActionModeCallback actionModeCallback);
+        //*/
     }
 
     static class SelectedConversation {
@@ -75,7 +75,7 @@ public class MultiSelectActionModeCallback implements Callback {
     private final ArrayMap<String, SelectedConversation> mSelectedConversations;
 
     private Listener mListener;
-    /*/ freeme.linqingwei, 20171213. redesign conversation list.
+    /*/ Way Lin, 20171213. redesign conversation list.
     private MenuItem mArchiveMenuItem;
     private MenuItem mUnarchiveMenuItem;
     private MenuItem mAddContactMenuItem;
@@ -93,7 +93,7 @@ public class MultiSelectActionModeCallback implements Callback {
 
     @Override
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-        //*/ freeme.linqingwei, 20171213. redesign conversation list.
+        //*/ Way Lin, 20171213. redesign conversation list.
         initActionMode(actionMode);
         mHasInflated = true;
         updateActionMode();
@@ -118,7 +118,7 @@ public class MultiSelectActionModeCallback implements Callback {
 
     @Override
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-        //*/ freeme.linqingwei, 20171213. redesign conversation list.
+        //*/ Way Lin, 20171213. redesign conversation list.
         return false;
         /*/
         switch(menuItem.getItemId()) {
@@ -159,7 +159,7 @@ public class MultiSelectActionModeCallback implements Callback {
         mListener = null;
         mSelectedConversations.clear();
         mHasInflated = false;
-        //*/ freeme.linqingwei, 20171213. redesign conversation list.
+        //*/ Way Lin, 20171213. redesign conversation list.
         destroyActionMode();
         //*/
     }
@@ -175,7 +175,7 @@ public class MultiSelectActionModeCallback implements Callback {
             mSelectedConversations.put(id, new SelectedConversation(conversationListItemData));
         }
 
-        //*/ freeme.linqingwei, 20171213. redesign conversation list.
+        //*/ Way Lin, 20171213. redesign conversation list.
         updateActionMode();
         /*/
         if (mSelectedConversations.isEmpty()) {
@@ -190,119 +190,7 @@ public class MultiSelectActionModeCallback implements Callback {
         return mSelectedConversations.containsKey(selectedId);
     }
 
-    //*/ freeme.linqingwei, 20171213. redesign conversation list.
-    private TextView mActionCancel;
-    private TextView mActionTitle;
-    private TextView mActionSubtitle;
-
-    private void initActionMode(final ActionMode actionMode) {
-        if (actionMode != null) {
-            View customView = actionMode.getCustomView();
-            if (customView != null) {
-                mActionCancel = customView.findViewById(R.id.action_mode_cancel);
-                mActionTitle = customView.findViewById(R.id.action_mode_title);
-                mActionSubtitle = customView.findViewById(R.id.action_mode_subtitle);
-            }
-        }
-
-        if (mActionCancel != null) {
-            mActionCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mListener != null) {
-                        mListener.onActionBarHome();
-                    }
-                }
-            });
-        }
-
-        if (mActionSubtitle != null) {
-            mActionSubtitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setSelectedAll(!isSelectedAll());
-                }
-            });
-        }
-    }
-
-    public void updateActionMode() {
-        if (!mHasInflated) {
-            return;
-        }
-
-        final int selectedCount = mSelectedConversations.size();
-        if (mActionTitle != null) {
-            Context context = mActionTitle.getContext();
-            if (context != null && selectedCount > 0) {
-                mActionTitle.setText(context.getResources()
-                        .getQuantityString(R.plurals.message_view_selected_message_count,
-                                selectedCount, selectedCount));
-            } else {
-                mActionTitle.setText(R.string.select_conversations);
-            }
-        }
-
-        if (mActionSubtitle != null) {
-            mActionSubtitle.setText(selectedCount == getSelectionCount()
-                    ? R.string.deselect_all : R.string.select_all);
-        }
-    }
-
-    private void destroyActionMode() {
-        if (mActionCancel != null) {
-            mActionCancel.setOnClickListener(null);
-        }
-
-        if (mActionSubtitle != null) {
-            mActionSubtitle.setOnClickListener(null);
-        }
-    }
-
-    private void setSelectedAll(boolean selectedAll) {
-        if (isCursorValid()) {
-            if (selectedAll) {
-                fillSelectedConversationsMap();
-            } else {
-                mSelectedConversations.clear();
-            }
-
-            updateActionMode();
-            mListener.getCurrentAdapter().notifyDataSetChanged();
-        }
-    }
-
-    private boolean isCursorValid() {
-        return (mListener.getCurrentAdapter() != null
-                && mListener.getCurrentAdapter().getCursor() != null
-                && !mListener.getCurrentAdapter().getCursor().isClosed());
-    }
-
-    private boolean isSelectedAll() {
-        return (mListener.getCurrentAdapter().getCursor().getCount()
-                == mSelectedConversations.size());
-    }
-
-    private int getSelectionCount() {
-        int count = 0;
-        if (isCursorValid()) {
-            count = mListener.getCurrentAdapter().getItemCount();
-        }
-
-        return count;
-    }
-
-    private void fillSelectedConversationsMap() {
-        mSelectedConversations.clear();
-        Cursor cursor = mListener.getCurrentAdapter().getCursor();
-        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            ConversationListItemData conversationListItemData = new ConversationListItemData();
-            conversationListItemData.bind(cursor);
-            final String id = conversationListItemData.getConversationId();
-            mSelectedConversations.put(id, new SelectedConversation(conversationListItemData));
-        }
-    }
-    /*/
+    /*/ Way Lin, 20171213. redesign conversation list.
     private void updateActionIconsVisiblity() {
         if (!mHasInflated) {
             return;
@@ -354,6 +242,159 @@ public class MultiSelectActionModeCallback implements Callback {
 
         mArchiveMenuItem.setVisible(hasCurrentlyUnarchived);
         mUnarchiveMenuItem.setVisible(hasCurrentlyArchived);
+    }
+    //*/
+
+    //*/ Way Lin, 20171213. redesign conversation list.
+    private TextView mActionCancel;
+    private TextView mActionTitle;
+    private TextView mActionSubtitle;
+
+    public void updateActionMode() {
+        if (!mHasInflated) {
+            return;
+        }
+
+        final int selectedCount = mSelectedConversations.size();
+        if (mActionTitle != null) {
+            Context context = mActionTitle.getContext();
+            if (context != null && selectedCount > 0) {
+                mActionTitle.setText(context.getResources()
+                        .getQuantityString(R.plurals.message_view_selected_message_count,
+                                selectedCount, selectedCount));
+            } else {
+                mActionTitle.setText(R.string.select_conversations);
+            }
+        }
+
+        if (mActionSubtitle != null) {
+            mActionSubtitle.setText(isSelectedAll()
+                    ? R.string.deselect_all : R.string.select_all);
+        }
+    }
+
+    public void onBottomItemClicked(int id) {
+        switch(id) {
+            case R.id.action_delete:
+                mListener.onActionBarDelete(mSelectedConversations.values());
+                break;
+            case R.id.action_archive:
+                mListener.onActionBarArchive(mSelectedConversations.values(), true);
+                break;
+            case R.id.action_unarchive:
+                mListener.onActionBarArchive(mSelectedConversations.values(), false);
+                break;
+            case R.id.action_notification_off:
+                mListener.onActionBarNotification(mSelectedConversations.values(), false);
+                break;
+            case R.id.action_notification_on:
+                mListener.onActionBarNotification(mSelectedConversations.values(), true);
+                break;
+            case R.id.action_add_contact:
+                Assert.isTrue(mSelectedConversations.size() == 1);
+                mListener.onActionBarAddContact(mSelectedConversations.valueAt(0));
+                break;
+            case R.id.action_block:
+                Assert.isTrue(mSelectedConversations.size() == 1);
+                mListener.onActionBarBlock(mSelectedConversations.valueAt(0));
+                break;
+            default:
+                break;
+        }
+    }
+
+    public ArrayMap<String, SelectedConversation> getSelectedConversations() {
+        return mSelectedConversations;
+    }
+
+    public HashSet<String> getBlockedSet() {
+        return mBlockedSet;
+    }
+
+    private void initActionMode(final ActionMode actionMode) {
+        if (actionMode != null) {
+            View customView = actionMode.getCustomView();
+            if (customView != null) {
+                mActionCancel = (TextView) customView.findViewById(R.id.action_mode_cancel);
+                mActionTitle = (TextView) customView.findViewById(R.id.action_mode_title);
+                mActionSubtitle = (TextView) customView.findViewById(R.id.action_mode_subtitle);
+            }
+        }
+
+        if (mActionCancel != null) {
+            mActionCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        mListener.onActionBarHome();
+                    }
+                }
+            });
+        }
+
+        if (mActionSubtitle != null) {
+            mActionSubtitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setSelectedAll(!isSelectedAll());
+                }
+            });
+        }
+    }
+
+    private void destroyActionMode() {
+        if (mActionCancel != null) {
+            mActionCancel.setOnClickListener(null);
+        }
+
+        if (mActionSubtitle != null) {
+            mActionSubtitle.setOnClickListener(null);
+        }
+    }
+
+    private void setSelectedAll(boolean selectedAll) {
+        if (isCursorValid()) {
+            if (selectedAll) {
+                fillSelectedConversationsMap();
+            } else {
+                mSelectedConversations.clear();
+            }
+
+            updateActionMode();
+            mListener.getCurrentAdapter().notifyDataSetChanged();
+            mListener.updateActionIcons(this);
+        }
+    }
+
+    private boolean isCursorValid() {
+        return (mListener.getCurrentAdapter() != null
+                && mListener.getCurrentAdapter().getCursor() != null
+                && !mListener.getCurrentAdapter().getCursor().isClosed());
+    }
+
+    private boolean isSelectedAll() {
+        return (mListener.getCurrentAdapter().getCursor().getCount()
+                == mSelectedConversations.size());
+    }
+
+    private int getSelectionCount() {
+        int count = 0;
+        if (isCursorValid()) {
+            count = mListener.getCurrentAdapter().getItemCount();
+        }
+
+        return count;
+    }
+
+    private void fillSelectedConversationsMap() {
+        mSelectedConversations.clear();
+        Cursor cursor = mListener.getCurrentAdapter().getCursor();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            ConversationListItemData conversationListItemData = new ConversationListItemData();
+            conversationListItemData.bind(cursor);
+            final String id = conversationListItemData.getConversationId();
+            mSelectedConversations.put(id, new SelectedConversation(conversationListItemData));
+        }
     }
     //*/
 }

@@ -23,10 +23,12 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewGroupCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +41,7 @@ import android.view.ViewPropertyAnimator;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.AbsListView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.messaging.R;
 import com.android.messaging.annotation.VisibleForAnimation;
@@ -49,13 +52,16 @@ import com.android.messaging.datamodel.data.ConversationListData;
 import com.android.messaging.datamodel.data.ConversationListData.ConversationListDataListener;
 import com.android.messaging.datamodel.data.ConversationListItemData;
 import com.android.messaging.ui.BugleAnimationTags;
+import com.android.messaging.ui.FreemeRecycleViewDivider;
 import com.android.messaging.ui.ListEmptyView;
 import com.android.messaging.ui.SnackBarInteraction;
 import com.android.messaging.ui.UIIntents;
 import com.android.messaging.util.AccessibilityUtil;
 import com.android.messaging.util.Assert;
+import com.android.messaging.util.FreemeUtils;
 import com.android.messaging.util.ImeUtil;
 import com.android.messaging.util.LogUtil;
+import com.android.messaging.util.PhoneUtils;
 import com.android.messaging.util.UiUtils;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -86,6 +92,9 @@ public class ConversationListFragment extends Fragment implements ConversationLi
         public boolean isSwipeAnimatable();
         public boolean isSelectionMode();
         public boolean hasWindowFocus();
+        //*/ Way Lin, 20171228. redesign conversation list.
+        MultiSelectActionModeCallback getActionModeCallback();
+        //*/
     }
 
     private ConversationListFragmentHost mHost;
@@ -136,6 +145,11 @@ public class ConversationListFragment extends Fragment implements ConversationLi
         Assert.notNull(mHost);
         setScrolledToNewestConversationIfNeeded();
 
+        //*/ Way Lin, 20171228. redesign conversation list.
+        mIsDefaultSmsApp = PhoneUtils.getDefault().isDefaultSmsApp();
+        LogUtil.d(LogUtil.BUGLE_TAG,"ConversationListFragment onResume mIsDefaultSmsApp:"+mIsDefaultSmsApp);
+        //*/
+
         updateUi();
     }
 
@@ -170,11 +184,21 @@ public class ConversationListFragment extends Fragment implements ConversationLi
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
             final Bundle savedInstanceState) {
+        //*/ Way Lin, 20171228. redesign conversation list.
+        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.freeme_fragment_conversation_list,
+                container, false);
+        mRootView = rootView;
+        /*/
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.conversation_list_fragment,
                 container, false);
+        //*/
         mRecyclerView = (RecyclerView) rootView.findViewById(android.R.id.list);
         mEmptyListMessageView = (ListEmptyView) rootView.findViewById(R.id.no_conversations_view);
+        //*/ Way Lin, 20171228.
+        mEmptyListMessageView.setImageHint(R.drawable.freeme_empty_conversation);
+        /*/
         mEmptyListMessageView.setImageHint(R.drawable.ic_oobe_conv_list);
+        //*/
         // The default behavior for default layout param generation by LinearLayoutManager is to
         // provide width and height of WRAP_CONTENT, but this is not desirable for
         // ConversationListFragment; the view in each row should be a width of MATCH_PARENT so that
@@ -213,6 +237,9 @@ public class ConversationListFragment extends Fragment implements ConversationLi
             }
         });
         mRecyclerView.addOnItemTouchListener(new ConversationListSwipeHelper(mRecyclerView));
+        //*/ Way Lin, 20171228. redesign conversation list.
+        mRecyclerView.addItemDecoration(new FreemeRecycleViewDivider(activity, LinearLayoutManager.HORIZONTAL));
+        //*/
 
         if (savedInstanceState != null) {
             mListState = savedInstanceState.getParcelable(SAVED_INSTANCE_STATE_LIST_VIEW_STATE_KEY);
@@ -302,13 +329,14 @@ public class ConversationListFragment extends Fragment implements ConversationLi
 
     public void updateUi() {
         mAdapter.notifyDataSetChanged();
+        //*/ Way Lin, 20171228. redesign conversation list.
+        updateBottomLayout();
+        //*/
     }
 
     @Override
     public void onPrepareOptionsMenu(final Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        //*/ freeme.linqingwei, 20171213. redesign conversation list.
-        /*/
         final MenuItem startNewConversationMenuItem =
                 menu.findItem(R.id.action_start_new_conversation);
         if (startNewConversationMenuItem != null) {
@@ -324,7 +352,6 @@ public class ConversationListFragment extends Fragment implements ConversationLi
         if (archive != null) {
             archive.setVisible(true);
         }
-        //*/
     }
 
     @Override
@@ -334,13 +361,10 @@ public class ConversationListFragment extends Fragment implements ConversationLi
             return;
         }
 
-        //*/ freeme.linqingwei, 20171213. redesign conversation list.
-        /*/
         mShowBlockedMenuItem = menu.findItem(R.id.action_show_blocked_contacts);
         if (mShowBlockedMenuItem != null) {
             mShowBlockedMenuItem.setVisible(mBlockedAvailable);
         }
-        //*/
     }
 
     /**
@@ -450,9 +474,148 @@ public class ConversationListFragment extends Fragment implements ConversationLi
         return mHost != null && mHost.isSelectionMode();
     }
 
-    //*/ freeme.linqingwei, 20171213. redesign conversation list.
+    //*/ Way Lin, 20171213. redesign conversation list.
     protected ConversationListAdapter getConversationListAdapter() {
         return mAdapter;
     }
+
+    private View mRootView;
+    private View mBottomLayout;
+    private TextView mTvDelete;
+    private TextView mTvArchive;
+    private TextView mTvUnArchive;
+    private TextView mTvNotificationOn;
+    private TextView mTvNotificationOff;
+    private TextView mTvAddContact;
+    private TextView mTvBlock;
+
+    @Override
+    public void onDestroyView() {
+        mRootView = null;
+        super.onDestroyView();
+    }
+
+    private void initBottomLayout() {
+        if (mRootView != null) {
+            mBottomLayout = FreemeUtils.getViewFromStub(mRootView,
+                    R.id.conversation_bottom_layout,
+                    R.id.conversations_bottom_layout_stub);
+        }
+
+        if (mBottomLayout != null) {
+            mTvDelete = (TextView) mBottomLayout.findViewById(R.id.action_delete);
+            mTvDelete.setOnClickListener(mOnBottomItemClickListener);
+
+            mTvArchive = (TextView) mBottomLayout.findViewById(R.id.action_archive);
+            mTvArchive.setOnClickListener(mOnBottomItemClickListener);
+
+            mTvUnArchive = (TextView) mBottomLayout.findViewById(R.id.action_unarchive);
+            mTvUnArchive.setOnClickListener(mOnBottomItemClickListener);
+
+            mTvNotificationOn = (TextView) mBottomLayout.findViewById(R.id.action_notification_on);
+            mTvNotificationOn.setOnClickListener(mOnBottomItemClickListener);
+
+            mTvNotificationOff = (TextView) mBottomLayout.findViewById(R.id.action_notification_off);
+            mTvNotificationOff.setOnClickListener(mOnBottomItemClickListener);
+
+            mTvAddContact = (TextView) mBottomLayout.findViewById(R.id.action_add_contact);
+            mTvAddContact.setOnClickListener(mOnBottomItemClickListener);
+
+            mTvBlock = (TextView) mBottomLayout.findViewById(R.id.action_block);
+            mTvBlock.setOnClickListener(mOnBottomItemClickListener);
+        }
+    }
+
+    private View.OnClickListener mOnBottomItemClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            MultiSelectActionModeCallback actionModeCallback = mHost.getActionModeCallback();
+            if (actionModeCallback != null) {
+                actionModeCallback.onBottomItemClicked(v.getId());
+            }
+        }
+    };
+
+    private void updateBottomLayout() {
+        final boolean isSelectionMode = isSelectionMode();
+        if (mBottomLayout == null && isSelectionMode) {
+            initBottomLayout();
+        }
+
+        if (mBottomLayout != null) {
+            final MultiSelectActionModeCallback actionModeCallback = mHost.getActionModeCallback();
+            final boolean showBottom = isSelectionMode && (actionModeCallback != null);
+            if (showBottom) {
+                updateActionIcons(actionModeCallback);
+                mBottomLayout.setVisibility(View.VISIBLE);
+            } else {
+                mBottomLayout.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    public void updateActionIcons(MultiSelectActionModeCallback actionModeCallback) {
+        ArrayMap<String, MultiSelectActionModeCallback.SelectedConversation> selectedConversations
+                = actionModeCallback.getSelectedConversations();
+        final int selected = selectedConversations.size();
+        final boolean hasSelected = selected > 0;
+
+        if (selected == 1) {
+            final MultiSelectActionModeCallback.SelectedConversation conversation =
+                    selectedConversations.valueAt(0);
+            // The look up key is a key given to us by contacts app, so if we have a look up key,
+            // we know that the participant is already in contacts.
+            final boolean isInContacts = !TextUtils.isEmpty(conversation.participantLookupKey);
+            mTvAddContact.setEnabled(!conversation.isGroup && !isInContacts);
+            // ParticipantNormalizedDestination is always null for group conversations.
+            final String otherParticipant = conversation.otherParticipantNormalizedDestination;
+            mTvBlock.setEnabled(otherParticipant != null
+                    && !actionModeCallback.getBlockedSet().contains(otherParticipant));
+        } else {
+            mTvBlock.setEnabled(false);
+            mTvAddContact.setEnabled(false);
+        }
+
+        boolean hasCurrentlyArchived = false;
+        boolean hasCurrentlyUnarchived = false;
+        boolean hasCurrentlyOnNotification = false;
+        boolean hasCurrentlyOffNotification = false;
+        final Iterable<MultiSelectActionModeCallback.SelectedConversation> conversations =
+                selectedConversations.values();
+        for (final MultiSelectActionModeCallback.SelectedConversation conversation : conversations) {
+            if (conversation.notificationEnabled) {
+                hasCurrentlyOnNotification = true;
+            } else {
+                hasCurrentlyOffNotification = true;
+            }
+
+            if (conversation.isArchived) {
+                hasCurrentlyArchived = true;
+            } else {
+                hasCurrentlyUnarchived = true;
+            }
+
+            // If we found at least one of each example we don't need to keep looping.
+            if (hasCurrentlyOffNotification && hasCurrentlyOnNotification &&
+                    hasCurrentlyArchived && hasCurrentlyUnarchived) {
+                break;
+            }
+        }
+        // If we have notification off conversations we show on button, if we have notification on
+        // conversation we show off button. We can show both if we have a mixture.
+        FreemeUtils.setVisibility(mTvNotificationOff, hasCurrentlyOnNotification);
+        FreemeUtils.setVisibility(mTvNotificationOn, hasCurrentlyOffNotification);
+
+        FreemeUtils.setVisibility(mTvArchive, hasCurrentlyUnarchived);
+        FreemeUtils.setVisibility(mTvUnArchive, hasCurrentlyArchived);
+        FreemeUtils.setEnabled(mTvDelete, hasSelected);
+    }
+
+    public boolean mIsDefaultSmsApp = true;
+
+    public boolean isDefaultSmsApp() {
+        return mIsDefaultSmsApp;
+    }
+
     //*/
 }

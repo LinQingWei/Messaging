@@ -68,6 +68,9 @@ public class ConversationListItemData {
     private String mSnippetSenderFirstName;
     private String mSnippetSenderDisplayDestination;
     private boolean mIsEnterprise;
+    //*/ Way Lin, 20171226. redesign conversation list.
+    private int mUnreadCount;
+    //*/
 
     public ConversationListItemData() {
     }
@@ -120,6 +123,9 @@ public class ConversationListItemData {
         mSnippetSenderDisplayDestination =
                 cursor.getString(INDEX_SNIPPET_SENDER_DISPLAY_DESTINATION);
         mIsEnterprise = cursor.getInt(INDEX_IS_ENTERPRISE) == 1;
+        //*/ Way Lin, 20171226. redesign conversation list.
+        mUnreadCount = cursor.getInt(INDEX_SMS_UNREAD_COUNT);
+        //*/
     }
 
     public String getConversationId() {
@@ -272,6 +278,12 @@ public class ConversationListItemData {
         return mSnippetSenderDisplayDestination;
     }
 
+    //*/ Way Lin, 20171226. redesign conversation list.
+    public int getUnreadCount() {
+        return mUnreadCount;
+    }
+    //*/
+
     public void deleteConversation() {
         DeleteConversationAction.deleteConversation(mConversationId, mTimestamp);
     }
@@ -348,7 +360,13 @@ public class ConversationListItemData {
             + DatabaseHelper.PARTICIPANTS_TABLE + '.' + ParticipantColumns.DISPLAY_DESTINATION
             + " as " + ConversationListViewColumns.SNIPPET_SENDER_DISPLAY_DESTINATION + ", "
             + DatabaseHelper.CONVERSATIONS_TABLE + '.' + ConversationColumns.IS_ENTERPRISE
+            //*/ Way Lin, 20171228.
+            + " as " + ConversationListViewColumns.IS_ENTERPRISE + ", "
+            + DatabaseHelper.CONVERSATIONS_TABLE + '.' + ConversationColumns.SMS_UNREAD_COUNT
+            + " as " + ConversationListViewColumns.SMS_UNREAD_COUNT;
+            /*/
             + " as " + ConversationListViewColumns.IS_ENTERPRISE;
+            //*/
 
     private static final String JOIN_PARTICIPANTS =
             " LEFT JOIN " + DatabaseHelper.PARTICIPANTS_TABLE + " ON ("
@@ -408,6 +426,9 @@ public class ConversationListItemData {
         static final String SNIPPET_SENDER_DISPLAY_DESTINATION =
                 "snippet_sender_display_destination";
         static final String IS_ENTERPRISE = ConversationColumns.IS_ENTERPRISE;
+        //*/ Way Lin, 20171226. redesign conversation list.
+        static final String SMS_UNREAD_COUNT = ConversationColumns.SMS_UNREAD_COUNT;
+        //*/
     }
 
     public static final String[] PROJECTION = {
@@ -441,6 +462,9 @@ public class ConversationListItemData {
         ConversationListViewColumns.SNIPPET_SENDER_FIRST_NAME,
         ConversationListViewColumns.SNIPPET_SENDER_DISPLAY_DESTINATION,
         ConversationListViewColumns.IS_ENTERPRISE,
+        //*/ Way Lin, 20171226. redesign conversation list.
+        ConversationListViewColumns.SMS_UNREAD_COUNT,
+        //*/
     };
 
     private static final int INDEX_ID = 0;
@@ -473,6 +497,9 @@ public class ConversationListItemData {
     private static final int INDEX_SNIPPET_SENDER_FIRST_NAME = 27;
     private static final int INDEX_SNIPPET_SENDER_DISPLAY_DESTINATION = 28;
     private static final int INDEX_IS_ENTERPRISE = 29;
+    //*/ Way Lin, 20171226. redesign conversation list.
+    private static final int INDEX_SMS_UNREAD_COUNT = 30;
+    //*/
 
     private static final String DIVIDER_TEXT = ", ";
 

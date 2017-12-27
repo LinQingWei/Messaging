@@ -78,4 +78,12 @@ public class ForwardMessageActivity extends BaseBugleActivity
     public boolean isSelectionMode() {
         return false;
     }
+
+    //*/ Way Lin, 20171228. redesign conversation list.
+    @Override
+    public MultiSelectActionModeCallback getActionModeCallback() {
+        return null;
+    }
+
+    //*/
 }

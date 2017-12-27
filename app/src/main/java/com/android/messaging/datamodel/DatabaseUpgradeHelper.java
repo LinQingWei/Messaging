@@ -17,6 +17,7 @@ package com.android.messaging.datamodel;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.android.messaging.Factory;
 import com.android.messaging.util.Assert;
@@ -32,6 +33,39 @@ public class DatabaseUpgradeHelper {
         }
 
         LogUtil.i(TAG, "Database upgrade started from version " + oldVersion + " to " + newVersion);
+        //*/ Way Lin, 20171228. redesign conversation list.
+        switch (oldVersion) {
+            case 0:
+                DatabaseHelper.rebuildTables(db);
+            case 1:
+                if (newVersion <= 1) {
+                    return;
+                }
+                try {
+                    doUpgradeWithExceptions(db, oldVersion, newVersion);
+                    LogUtil.i(TAG, "Finished database upgrade");
+                } catch (final Exception ex) {
+                    LogUtil.e(TAG, "Failed to perform db upgrade from version " +
+                            oldVersion + " to version " + newVersion, ex);
+                    DatabaseHelper.rebuildTables(db);
+                }
+            case 2:
+                if(newVersion <= 2){
+                    return;
+                }
+                db.beginTransaction();
+                try{
+                    DatabaseHelper.upgradeDatabaseToVersion3(db);
+                    db.setTransactionSuccessful();
+                } catch (Throwable ex) {
+                    Log.e(TAG, ex.getMessage(), ex);
+                    break;
+                }finally {
+                    db.endTransaction();
+                }
+                return;
+        }
+        /*/
         try {
             doUpgradeWithExceptions(db, oldVersion, newVersion);
             LogUtil.i(TAG, "Finished database upgrade");
@@ -40,6 +74,7 @@ public class DatabaseUpgradeHelper {
                     oldVersion + " to version " + newVersion, ex);
             DatabaseHelper.rebuildTables(db);
         }
+        //*/
     }
 
     public void doUpgradeWithExceptions(final SQLiteDatabase db, final int oldVersion,

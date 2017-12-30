@@ -43,6 +43,7 @@ import android.widget.TextView;
 import com.android.messaging.Factory;
 import com.android.messaging.R;
 import com.android.messaging.annotation.VisibleForAnimation;
+import com.android.messaging.datamodel.action.FreemeUpdateConversationTopStatusAction;
 import com.android.messaging.datamodel.action.UpdateConversationArchiveStatusAction;
 import com.android.messaging.datamodel.data.ConversationListItemData;
 import com.android.messaging.datamodel.data.MessageData;
@@ -138,8 +139,13 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
     private ImageView mNotificationBellView;
     private ImageView mFailedStatusIconView;
     //*/
+    //*/ Way Lin, 20171230. feature for top status.
+    private TextView mCrossSwipeArchiveLeftView;
+    private TextView mCrossSwipeTopRightView;
+    /*/
     private ImageView mCrossSwipeArchiveLeftImageView;
     private ImageView mCrossSwipeArchiveRightImageView;
+    //*/
     /*/ Way Lin, 20171225. redesign conversation list.
     private AsyncImageView mImagePreviewView;
     private AudioAttachmentView mAudioAttachmentView;
@@ -174,9 +180,14 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
         mNotificationBellView = (ImageView) findViewById(R.id.conversation_notification_bell);
         mFailedStatusIconView = (ImageView) findViewById(R.id.conversation_failed_status_icon);
         //*/
+        //*/ Way Lin, 20171230. feature for top status.
+        mCrossSwipeArchiveLeftView = (TextView) findViewById(R.id.crossSwipeArchiveIconLeft);
+        mCrossSwipeTopRightView = (TextView) findViewById(R.id.crossSwipeTopIconRight);
+        /*/
         mCrossSwipeArchiveLeftImageView = (ImageView) findViewById(R.id.crossSwipeArchiveIconLeft);
         mCrossSwipeArchiveRightImageView =
                 (ImageView) findViewById(R.id.crossSwipeArchiveIconRight);
+        //*/
         /*/ Way Lin, 20171225. redesign conversation list.
         mImagePreviewView = (AsyncImageView) findViewById(R.id.conversation_image_preview);
         mAudioAttachmentView = (AudioAttachmentView) findViewById(R.id.audio_attachment_view);
@@ -194,6 +205,9 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
         if (OsUtil.isAtLeastL()) {
             setTransitionGroup(true);
         }
+        //*/ Way Lin, 20171230. feature for top status.
+        mTopStatus = (ImageView) findViewById(R.id.conversation_top);
+        //*/
     }
 
     @Override
@@ -469,6 +483,7 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
 
         mContactCheckmarkView.setChecked(isSelectionMode && isSelected);
         mContactCheckmarkView.setVisibility(isSelectionMode ? VISIBLE : GONE);
+        mTopStatus.setVisibility(mData.isTopStatus() ? VISIBLE : GONE);
         /*/
         int color;
         final int maxLines;
@@ -615,6 +630,41 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
     @VisibleForAnimation
     public void setSwipeTranslationX(final float translationX) {
         mSwipeableContainer.setTranslationX(translationX);
+        //*/ Way Lin, 20171230. feature for top status.
+        if (translationX == 0) {
+            mCrossSwipeBackground.setVisibility(View.GONE);
+            mCrossSwipeArchiveLeftView.setVisibility(GONE);
+            mCrossSwipeTopRightView.setVisibility(GONE);
+
+            mSwipeableContainer.setBackgroundColor(Color.TRANSPARENT);
+        } else {
+            mCrossSwipeBackground.setVisibility(View.VISIBLE);
+            if (translationX > 0) {
+                final boolean isArchived = mData.getIsArchived();
+                mCrossSwipeArchiveLeftView.setCompoundDrawablesRelativeWithIntrinsicBounds(0,
+                        isArchived ?
+                                R.drawable.ic_archive_undo_small_dark
+                                : R.drawable.ic_archive_small_dark,
+                        0, 0);
+                mCrossSwipeArchiveLeftView.setText(isArchived ?
+                        R.string.action_unarchive : R.string.action_archive);
+                mCrossSwipeArchiveLeftView.setVisibility(VISIBLE);
+                mCrossSwipeTopRightView.setVisibility(GONE);
+            } else {
+                mCrossSwipeArchiveLeftView.setVisibility(GONE);
+                final boolean isTop = mData.isTopStatus();
+                mCrossSwipeTopRightView.setCompoundDrawablesRelativeWithIntrinsicBounds(0,
+                        isTop ?
+                                R.drawable.freeme_ic_untop_arrow
+                                : R.drawable.freeme_ic_top_arrow,
+                        0, 0);
+                mCrossSwipeTopRightView.setText(isTop ?
+                        R.string.freeme_action_untop : R.string.freeme_action_top);
+                mCrossSwipeTopRightView.setVisibility(VISIBLE);
+            }
+            mSwipeableContainer.setBackgroundResource(R.drawable.swipe_shadow_drag);
+        }
+        /*/
         if (translationX == 0) {
             mCrossSwipeBackground.setVisibility(View.GONE);
             mCrossSwipeArchiveLeftImageView.setVisibility(GONE);
@@ -632,6 +682,7 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
             }
             mSwipeableContainer.setBackgroundResource(R.drawable.swipe_shadow_drag);
         }
+        //*/
     }
 
     public void onSwipeComplete() {
@@ -797,6 +848,28 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
         } else {
             mUnreadView.setVisibility(GONE);
         }
+    }
+    //*/
+
+    //*/ Way Lin, 20171230. feature for top status.
+    private ImageView mTopStatus;
+
+    public void onSwipeTopComplete() {
+        final String conversationId = mData.getConversationId();
+        final boolean isTop = mData.isTopStatus();
+        FreemeUpdateConversationTopStatusAction.updateTopStatus(conversationId, !isTop);
+
+        final Runnable undoRunnable = new Runnable() {
+            @Override
+            public void run() {
+                FreemeUpdateConversationTopStatusAction.updateTopStatus(conversationId, isTop);
+            }
+        };
+        final String message = getResources().getString(isTop ?
+                R.string.freeme_untop_toast_message: R.string.freeme_top_toast_message, 1);
+        UiUtils.showSnackBar(getContext(), getRootView(), message, undoRunnable,
+                SnackBar.Action.SNACK_BAR_UNDO,
+                mHostInterface.getSnackBarInteractions());
     }
     //*/
 }

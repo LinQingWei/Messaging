@@ -71,6 +71,9 @@ public class ConversationListItemData {
     //*/ Way Lin, 20171226. redesign conversation list.
     private int mUnreadCount;
     //*/
+    //*/ Way Lin, 20171230. feature for top status.
+    private boolean mTopStatus;
+    //*/
 
     public ConversationListItemData() {
     }
@@ -125,6 +128,9 @@ public class ConversationListItemData {
         mIsEnterprise = cursor.getInt(INDEX_IS_ENTERPRISE) == 1;
         //*/ Way Lin, 20171226. redesign conversation list.
         mUnreadCount = cursor.getInt(INDEX_SMS_UNREAD_COUNT);
+        //*/
+        //*/ Way Lin, 20171230. feature for top status.
+        mTopStatus = cursor.getInt(INDEX_TOP_STATUS) == 1;
         //*/
     }
 
@@ -283,6 +289,12 @@ public class ConversationListItemData {
         return mUnreadCount;
     }
     //*/
+    //*/ Way Lin, 20171230. feature for top status.
+    public boolean isTopStatus() {
+        return mTopStatus;
+    }
+
+    //*/
 
     public void deleteConversation() {
         DeleteConversationAction.deleteConversation(mConversationId, mTimestamp);
@@ -360,10 +372,13 @@ public class ConversationListItemData {
             + DatabaseHelper.PARTICIPANTS_TABLE + '.' + ParticipantColumns.DISPLAY_DESTINATION
             + " as " + ConversationListViewColumns.SNIPPET_SENDER_DISPLAY_DESTINATION + ", "
             + DatabaseHelper.CONVERSATIONS_TABLE + '.' + ConversationColumns.IS_ENTERPRISE
-            //*/ Way Lin, 20171228.
+            //*/ Way Lin, 20171228. redesign conversation list.
             + " as " + ConversationListViewColumns.IS_ENTERPRISE + ", "
             + DatabaseHelper.CONVERSATIONS_TABLE + '.' + ConversationColumns.SMS_UNREAD_COUNT
-            + " as " + ConversationListViewColumns.SMS_UNREAD_COUNT;
+            + " as " + ConversationListViewColumns.SMS_UNREAD_COUNT
+            // Way Lin, 20171230. feature for top status.
+            + ", " + DatabaseHelper.CONVERSATIONS_TABLE + "." + ConversationColumns.TOP_STATUS
+            + " as " + ConversationListViewColumns.TOP_STATUS;
             /*/
             + " as " + ConversationListViewColumns.IS_ENTERPRISE;
             //*/
@@ -429,6 +444,9 @@ public class ConversationListItemData {
         //*/ Way Lin, 20171226. redesign conversation list.
         static final String SMS_UNREAD_COUNT = ConversationColumns.SMS_UNREAD_COUNT;
         //*/
+        //*/ Way Lin, 20171230. feature for top status.
+        static final String TOP_STATUS = ConversationColumns.TOP_STATUS;
+        //*/
     }
 
     public static final String[] PROJECTION = {
@@ -465,6 +483,9 @@ public class ConversationListItemData {
         //*/ Way Lin, 20171226. redesign conversation list.
         ConversationListViewColumns.SMS_UNREAD_COUNT,
         //*/
+        //*/ Way Lin, 20171230. feature for top status.
+        ConversationListViewColumns.TOP_STATUS,
+        //*/
     };
 
     private static final int INDEX_ID = 0;
@@ -499,6 +520,9 @@ public class ConversationListItemData {
     private static final int INDEX_IS_ENTERPRISE = 29;
     //*/ Way Lin, 20171226. redesign conversation list.
     private static final int INDEX_SMS_UNREAD_COUNT = 30;
+    //*/
+    //*/ Way Lin, 20171230. feature for top status.
+    private static final int INDEX_TOP_STATUS = 31;
     //*/
 
     private static final String DIVIDER_TEXT = ", ";

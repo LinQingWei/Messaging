@@ -1921,4 +1921,16 @@ public class BugleDatabaseOperations {
         Assert.inRange(count, 0, 1);
         return (count >= 0);
     }
+
+    //*/ Way Lin, 20171230. feature for top status.
+    @DoesNotRunOnMainThread
+    public static void updateConversationTopStatusInTransaction(final DatabaseWrapper dbWrapper,
+                                                                    final String conversationId, final boolean isTop) {
+        Assert.isNotMainThread();
+        Assert.isTrue(dbWrapper.getDatabase().inTransaction());
+        final ContentValues values = new ContentValues();
+        values.put(ConversationColumns.TOP_STATUS, isTop ? 1 : 0);
+        updateConversationRowIfExists(dbWrapper, conversationId, values);
+    }
+    //*/
 }

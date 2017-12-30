@@ -63,7 +63,21 @@ public class DatabaseUpgradeHelper {
                 }finally {
                     db.endTransaction();
                 }
-                return;
+            // Way Lin, 20171230. feature for top status.
+            case 3:
+                if (newVersion <= 3) {
+                    return;
+                }
+                db.beginTransaction();
+                try{
+                    DatabaseHelper.upgradeDatabaseToVersion4(db);
+                    db.setTransactionSuccessful();
+                } catch (Throwable ex) {
+                    Log.e(TAG, ex.getMessage(), ex);
+                    break;
+                }finally {
+                    db.endTransaction();
+                }
         }
         /*/
         try {

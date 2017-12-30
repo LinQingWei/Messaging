@@ -268,9 +268,17 @@ public class ConversationListSwipeHelper implements OnItemTouchListener {
      */
     private void onSwipeGestureEnd(final ConversationListItemView itemView,
             final int swipeDirection) {
+        //*/ Way Lin, 20171230. feature for top status.
+        if (swipeDirection == SWIPE_DIRECTION_RIGHT) {
+            itemView.onSwipeComplete();
+        } else if (swipeDirection == SWIPE_DIRECTION_LEFT) {
+            itemView.onSwipeTopComplete();
+        }
+        /*/
         if (swipeDirection == SWIPE_DIRECTION_RIGHT || swipeDirection == SWIPE_DIRECTION_LEFT) {
             itemView.onSwipeComplete();
         }
+        //*/
 
         // Balances out onSwipeGestureStart.
         itemView.setAnimating(false);

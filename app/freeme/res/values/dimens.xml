@@ -5,4 +5,5 @@
     <dimen name="freeme_bottom_layout_min_height">60dp</dimen>
     <dimen name="freeme_list_empty_margin_top">120dp</dimen>
     <dimen name="freeme_conversation_list_item_height_min">68dp</dimen>
+    <dimen name="freeme_conversation_top_status_size">16dp</dimen>
 </resources>

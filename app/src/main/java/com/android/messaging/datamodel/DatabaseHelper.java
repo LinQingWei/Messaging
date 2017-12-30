@@ -160,6 +160,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //*/ Way Lin, 20171226. redesign conversation list.
         public static final String SMS_UNREAD_COUNT = "sms_unread_count";
         //*/
+        //*/ Way Lin, 20171230. feature for top status.
+        public static final String TOP_STATUS = "top_status";
+        //*/
     }
 
     // Conversation table SQL
@@ -196,7 +199,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + ConversationColumns.SMS_SERVICE_CENTER + " TEXT ,"
                     //*/ Way Lin, 20171228. redesign conversation list.
                     + ConversationColumns.IS_ENTERPRISE + " INT DEFAULT(0), "
-                    + ConversationColumns.SMS_UNREAD_COUNT + " INT DEFAULT(0) "
+                    + ConversationColumns.SMS_UNREAD_COUNT + " INT DEFAULT(0)"
+                    //*/ Way Lin, 20171230. feature for top status.
+                    + ", " + ConversationColumns.TOP_STATUS + " INT DEFAULT(0)"
+                    //*/
                     /*/
                     + ConversationColumns.IS_ENTERPRISE + " INT DEFAULT(0)"
                     //*/
@@ -880,7 +886,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //*/ Way Lin, 20171226. redesign conversation list.
     public static void upgradeDatabaseToVersion3(final SQLiteDatabase db) {
-        Log.d("DatabaseHelper", "upgradeDatabaseToVersion4");
+        Log.d("DatabaseHelper", "upgradeDatabaseToVersion3");
         db.execSQL("ALTER TABLE " + CONVERSATIONS_TABLE + " ADD COLUMN " +
                 ConversationColumns.SMS_UNREAD_COUNT + " INTEGER DEFAULT 0");
 
@@ -951,6 +957,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 throw ex;
             }
         }
+    }
+    //*/
+
+    //*/ Way Lin, 20171230. feature for top status.
+    public static void upgradeDatabaseToVersion4(final SQLiteDatabase db) {
+        Log.d("DatabaseHelper", "upgradeDatabaseToVersion4");
+        db.execSQL("ALTER TABLE " + CONVERSATIONS_TABLE + " ADD COLUMN " +
+                ConversationColumns.TOP_STATUS + " INTEGER DEFAULT 0");
+
+        rebuildView(db,
+                ConversationListItemData.getConversationListView(),
+                ConversationListItemData.getConversationListViewSql());
     }
     //*/
 }

@@ -84,11 +84,6 @@ public class ConversationListActivity extends AbstractConversationListActivity {
     @Override
     public boolean onOptionsItemSelected(final MenuItem menuItem) {
         switch(menuItem.getItemId()) {
-            //*/ Way Lin, 20171213. redesign conversation list.
-            case R.id.action_settings:
-                onActionBarSettings();
-                return true;
-            /*/
             case R.id.action_start_new_conversation:
                 onActionBarStartNewConversation();
                 return true;
@@ -104,7 +99,6 @@ public class ConversationListActivity extends AbstractConversationListActivity {
             case R.id.action_show_blocked_contacts:
                 onActionBarBlockedParticipants();
                 return true;
-            //*/
         }
         return super.onOptionsItemSelected(menuItem);
     }

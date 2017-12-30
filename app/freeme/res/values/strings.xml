@@ -8,5 +8,9 @@
         <item quantity="one"><xliff:g example="1" id="message_count">%d</xliff:g> selected</item>
         <item quantity="other"><xliff:g example="9" id="message_count">%d</xliff:g> selected</item>
     </plurals>
-    <string name="freeme_database_version" translatable="false">3</string>
+    <string name="freeme_database_version" translatable="false">4</string>
+    <string name="freeme_action_top">sticky</string>
+    <string name="freeme_action_untop">unstick</string>
+    <string name="freeme_top_toast_message"><xliff:g id="count">%d</xliff:g> sticky</string>
+    <string name="freeme_untop_toast_message"><xliff:g id="count">%d</xliff:g> unstick</string>
 </resources>

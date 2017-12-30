@@ -8,4 +8,8 @@
         <item quantity="one">"已选择 <xliff:g id="MESSAGE_COUNT">%d</xliff:g> 项"</item>
         <item quantity="other">"已选择 <xliff:g id="MESSAGE_COUNT">%d</xliff:g> 项"</item>
     </plurals>
+    <string name="freeme_action_top">置顶</string>
+    <string name="freeme_action_untop">取消置顶</string>
+    <string name="freeme_top_toast_message">"已置顶 <xliff:g id="COUNT">%d</xliff:g> 个"</string>
+    <string name="freeme_untop_toast_message">"已取消置顶 <xliff:g id="COUNT">%d</xliff:g> 个"</string>
 </resources>

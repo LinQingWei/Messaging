@@ -47,19 +47,15 @@ import com.android.messaging.datamodel.action.FreemeUpdateConversationTopStatusA
 import com.android.messaging.datamodel.action.UpdateConversationArchiveStatusAction;
 import com.android.messaging.datamodel.data.ConversationListItemData;
 import com.android.messaging.datamodel.data.MessageData;
-import com.android.messaging.datamodel.media.UriImageRequestDescriptor;
 import com.android.messaging.sms.MmsUtils;
 import com.android.messaging.ui.ContactIconView;
 import com.android.messaging.ui.SnackBar;
 import com.android.messaging.ui.SnackBarInteraction;
 import com.android.messaging.util.Assert;
 import com.android.messaging.util.ContentType;
-import com.android.messaging.util.ImageUtils;
 import com.android.messaging.util.OsUtil;
-import com.android.messaging.util.PhoneUtils;
 import com.android.messaging.util.Typefaces;
 import com.android.messaging.util.UiUtils;
-import com.android.messaging.util.UriUtil;
 
 import java.util.List;
 
@@ -89,6 +85,10 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
         boolean isSelectionMode();
         //*/ Way Lin, 20171228. redesign conversation list.
         boolean isDefaultSmsApp();
+        //*/
+        //*/ Way Lin, 20171230. feature for notify conversations.
+        boolean isArchivedMode();
+        int getUnreadNotifyCount();
         //*/
     }
 
@@ -232,6 +232,12 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
     //*/
 
     private void setConversationName() {
+        //*/ Way Lin, 20171230.
+        if (isNotificationsBar()) {
+            setNotificationsBarName();
+            return;
+        }
+        //*/
         //*/ Way Lin, 20171228. redesign conversation list.
         final int notificationBellResId = mData.getNotificationEnabled() ?
                 0 : R.drawable.ic_notifications_off_small_light;
@@ -451,14 +457,19 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
         final Resources resources = getContext().getResources();
 
         //*/ Way Lin, 20171228. redesign conversation list.
+        final boolean isNotificationsBar = isNotificationsBar();
         setSnippet();
         setConversationName();
 
         // unread count
-        final boolean hasUnread = !mData.getIsRead();
         int unreadCount = 0;
-        if (hasUnread) {
-            unreadCount = mData.getUnreadCount();
+        if (isNotificationsBar) {
+            unreadCount = hostInterface.getUnreadNotifyCount();
+        } else {
+            final boolean hasUnread = !mData.getIsRead();
+            if (hasUnread) {
+                unreadCount = mData.getUnreadCount();
+            }
         }
         setConversationUnreadView(unreadCount);
 
@@ -467,23 +478,32 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
 
         mTimestampTextView.setText(mData.getFormattedTimestamp());
 
-        final boolean isSelected = mHostInterface.isConversationSelected(mData.getConversationId());
-        setSelected(isSelected);
-
-        Uri iconUri = null;
-        if (mData.getIcon() != null) {
-            iconUri = Uri.parse(mData.getIcon());
-        }
-        mContactIconView.setImageResourceUri(iconUri, mData.getParticipantContactId(),
-                mData.getParticipantLookupKey(), mData.getOtherParticipantNormalizedDestination());
         final boolean isSelectionMode = mHostInterface.isSelectionMode();
-        mContactIconView.setOnLongClickListener(this);
-        mContactIconView.setClickable(!isSelectionMode);
-        mContactIconView.setLongClickable(!isSelectionMode);
+        if (isNotificationsBar) {
+            setShortAndLongClickable(!isSelectionMode);
+            mContactIconView.setImageResource(R.drawable.freeme_ic_notifications_bell);
+            mContactIconView.setOnLongClickListener(null);
+            mContactIconView.setClickable(false);
+            mContactIconView.setLongClickable(false);
+            mContactCheckmarkView.setVisibility(GONE);
+            mTopStatus.setVisibility(GONE);
+        } else {
+            final boolean isSelected = mHostInterface.isConversationSelected(mData.getConversationId());
+            setSelected(isSelected);
+            Uri iconUri = null;
+            if (mData.getIcon() != null) {
+                iconUri = Uri.parse(mData.getIcon());
+            }
+            mContactIconView.setImageResourceUri(iconUri, mData.getParticipantContactId(),
+                    mData.getParticipantLookupKey(), mData.getOtherParticipantNormalizedDestination());
+            mContactIconView.setOnLongClickListener(this);
+            mContactIconView.setClickable(!isSelectionMode);
+            mContactIconView.setLongClickable(!isSelectionMode);
 
-        mContactCheckmarkView.setChecked(isSelectionMode && isSelected);
-        mContactCheckmarkView.setVisibility(isSelectionMode ? VISIBLE : GONE);
-        mTopStatus.setVisibility(mData.isTopStatus() ? VISIBLE : GONE);
+            mContactCheckmarkView.setChecked(isSelectionMode && isSelected);
+            mContactCheckmarkView.setVisibility(isSelectionMode ? VISIBLE : GONE);
+            mTopStatus.setVisibility(mData.isTopStatus() ? VISIBLE : GONE);
+        }
         /*/
         int color;
         final int maxLines;
@@ -619,7 +639,12 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
     }
 
     public boolean isSwipeAnimatable() {
+        //*/ Way Lin, 20171230. feature for notify conversations.
+        return mHostInterface.isSwipeAnimatable()
+                && !isNotificationsBar();
+        /*/
         return mHostInterface.isSwipeAnimatable();
+        //*/
     }
 
     @VisibleForAnimation
@@ -870,6 +895,17 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
         UiUtils.showSnackBar(getContext(), getRootView(), message, undoRunnable,
                 SnackBar.Action.SNACK_BAR_UNDO,
                 mHostInterface.getSnackBarInteractions());
+    }
+    //*/
+
+    //*/ Way Lin, 20171230. feature for notify conversations.
+    public boolean isNotificationsBar() {
+        return (mData.getIsArchived() && !mHostInterface.isArchivedMode());
+    }
+
+    private void setNotificationsBarName() {
+        mConversationNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        mConversationNameView.setText(R.string.freeme_notify_set_title);
     }
     //*/
 }

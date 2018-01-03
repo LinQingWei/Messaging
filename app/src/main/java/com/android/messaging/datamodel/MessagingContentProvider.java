@@ -95,6 +95,13 @@ public class MessagingContentProvider extends ContentProvider {
     public static final Uri DRAFT_IMAGES_URI = Uri.parse(CONTENT_AUTHORITY +
             DRAFT_IMAGES_QUERY);
 
+    //*/ Way Lin, 20180104. feature for notify conversations.
+    private static final String UNREAD_NOTIFY_MESSAGES_COUNT_QUERY = "unread_notify";
+
+    public static final Uri UNREAD_NOTIFY_MESSAGES_COUNT_URI = Uri.parse(CONTENT_AUTHORITY
+            + UNREAD_NOTIFY_MESSAGES_COUNT_QUERY);
+    //*/
+
     /**
      * Notifies that <i>all</i> data exposed by the provider needs to be refreshed.
      * <p>
@@ -152,6 +159,9 @@ public class MessagingContentProvider extends ContentProvider {
     private static final int CONVERSATION_IMAGES_QUERY_CODE = 50;
     private static final int DRAFT_IMAGES_QUERY_CODE = 60;
     private static final int PARTICIPANTS_QUERY_CODE = 70;
+    //*/ Way Lin, 20180104. feature for notify conversations.
+    private static final int UNREAD_NOTIFY_MESSAGES_COUNT_QUERY_CODE = 80;
+    //*/
 
     // TODO: Move to a better structured URI namespace.
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -167,6 +177,10 @@ public class MessagingContentProvider extends ContentProvider {
                 CONVERSATION_IMAGES_QUERY_CODE);
         sURIMatcher.addURI(AUTHORITY, DRAFT_IMAGES_QUERY + "/*",
                 DRAFT_IMAGES_QUERY_CODE);
+        //*/ Way Lin, 20180104. feature for notify conversations.
+        sURIMatcher.addURI(AUTHORITY, UNREAD_NOTIFY_MESSAGES_COUNT_QUERY,
+                UNREAD_NOTIFY_MESSAGES_COUNT_QUERY_CODE);
+        //*/
     }
 
     /**
@@ -364,6 +378,12 @@ public class MessagingContentProvider extends ContentProvider {
                     throw new IllegalArgumentException("Malformed URI " + uri);
                 }
                 break;
+            //*/ Way Lin, 20180104. feature for notify conversations.
+            case UNREAD_NOTIFY_MESSAGES_COUNT_QUERY_CODE:
+                queryBuilder.setTables(ConversationListItemData.getConversationListView());
+                queryBuilder.appendWhere(ConversationColumns.ARCHIVE_STATUS + " = 1 ");
+                break;
+            //*/
             default: {
                 throw new IllegalArgumentException("Unknown URI " + uri);
             }
@@ -473,4 +493,7 @@ public class MessagingContentProvider extends ContentProvider {
         // We cannot initialize mDatabaseWrapper yet as the Factory may not be initialized
         return true;
     }
+    //*/ Way Lin, 20180104. feature for notify conversations.
+
+    //*/
 }

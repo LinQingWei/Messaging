@@ -13,4 +13,5 @@
     <string name="freeme_action_untop">unstick</string>
     <string name="freeme_top_toast_message"><xliff:g id="count">%d</xliff:g> sticky</string>
     <string name="freeme_untop_toast_message"><xliff:g id="count">%d</xliff:g> unstick</string>
+    <string name="freeme_notify_set_title">"Notifications"</string>
 </resources>

@@ -43,7 +43,7 @@ public class ConversationListData extends BindableData
     private static final String TAG = LogUtil.BUGLE_DATAMODEL_TAG;
     private static final String BINDING_ID = "bindingId";
     public static final String SORT_ORDER =
-            //*/ Way Lin, 20171230.
+            //*/ Way Lin, 20171230. feature for top status.
             ConversationListViewColumns.TOP_STATUS + " DESC, " +
             ConversationListViewColumns.SORT_TIMESTAMP + " DESC";
             /*/
@@ -53,11 +53,22 @@ public class ConversationListData extends BindableData
     private static final String WHERE_ARCHIVED =
             "(" + ConversationListViewColumns.ARCHIVE_STATUS + " = 1)";
     public static final String WHERE_NOT_ARCHIVED =
+            //*/ Way Lin, 20171230. feature for notify conversations.
+            "(" + ConversationListViewColumns.ARCHIVE_STATUS + " = 0)"
+            + " OR (" + ConversationListViewColumns._ID + " = (SELECT "
+            + ConversationListViewColumns._ID + " FROM " + ConversationListItemData.getConversationListView()
+            + " WHERE " + ConversationListViewColumns.ARCHIVE_STATUS + " = 1 ORDER BY "
+            + ConversationListViewColumns.SORT_TIMESTAMP + " DESC LIMIT 1))";
+            /*/
             "(" + ConversationListViewColumns.ARCHIVE_STATUS + " = 0)";
+            //*/
 
     public interface ConversationListDataListener {
         public void onConversationListCursorUpdated(ConversationListData data, Cursor cursor);
         public void setBlockedParticipantsAvailable(boolean blockedAvailable);
+        //*/ Way Lin, 20180103. feature for notify conversations.
+        void onUnreadNotifyListCursorUpdated();
+        //*/
     }
 
     private ConversationListDataListener mListener;
@@ -106,6 +117,16 @@ public class ConversationListData extends BindableData
                             null,       // selection args
                             SORT_ORDER);
                     break;
+                //*/ Way Lin, 20180104. feature for notify conversations.
+                case UNREAD_NOTIFY_MESSAGES_COUNT_LOADER:
+                    loader = new BoundCursorLoader(bindingId, mContext,
+                            MessagingContentProvider.UNREAD_NOTIFY_MESSAGES_COUNT_URI,
+                            UNREAD_NOTIFY_MESSAGES_PROJECTION,
+                            null,
+                            null,
+                            null);
+                    break;
+                //*/
                 default:
                     Assert.fail("Unknown loader id");
                     break;
@@ -136,6 +157,12 @@ public class ConversationListData extends BindableData
                 case CONVERSATION_LIST_LOADER:
                     mListener.onConversationListCursorUpdated(this, data);
                     break;
+                //*/ Way Lin, 20180103. feature for notify conversations.
+                case UNREAD_NOTIFY_MESSAGES_COUNT_LOADER:
+                    updateUnreadNotifyMessages(data);
+                    mListener.onUnreadNotifyListCursorUpdated();
+                    break;
+                //*/
                 default:
                     Assert.fail("Unknown loader id");
                     break;
@@ -159,6 +186,11 @@ public class ConversationListData extends BindableData
                 case CONVERSATION_LIST_LOADER:
                     mListener.onConversationListCursorUpdated(this, null);
                     break;
+                //*/ Way Lin, 20180103. feature for notify conversations.
+                case UNREAD_NOTIFY_MESSAGES_COUNT_LOADER:
+                    mListener.onUnreadNotifyListCursorUpdated();
+                    break;
+                //*/
                 default:
                     Assert.fail("Unknown loader id");
                     break;
@@ -177,6 +209,9 @@ public class ConversationListData extends BindableData
         mLoaderManager = loaderManager;
         mLoaderManager.initLoader(CONVERSATION_LIST_LOADER, mArgs, this);
         mLoaderManager.initLoader(BLOCKED_PARTICIPANTS_AVAILABLE_LOADER, mArgs, this);
+        //*/ Way Lin, 20180103. feature for notify conversations.
+        mLoaderManager.initLoader(UNREAD_NOTIFY_MESSAGES_COUNT_LOADER, mArgs, this );
+        //*/
     }
 
     public void handleMessagesSeen() {
@@ -193,6 +228,9 @@ public class ConversationListData extends BindableData
         if (mLoaderManager != null) {
             mLoaderManager.destroyLoader(CONVERSATION_LIST_LOADER);
             mLoaderManager.destroyLoader(BLOCKED_PARTICIPANTS_AVAILABLE_LOADER);
+            //*/ Way Lin, 20180103. feature for notify conversations.
+            mLoaderManager.destroyLoader(UNREAD_NOTIFY_MESSAGES_COUNT_LOADER);
+            //*/
             mLoaderManager = null;
         }
     }
@@ -213,4 +251,22 @@ public class ConversationListData extends BindableData
     public HashSet<String> getBlockedParticipants() {
         return mBlockedParticipants;
     }
+    //*/ Way Lin, 20180103. feature for notify conversations.
+    private int mUnreadNotifyMessages;
+    private static final int UNREAD_NOTIFY_MESSAGES_COUNT_LOADER = 3;
+    private static final String[] UNREAD_NOTIFY_MESSAGES_PROJECTION = new String[] {
+        " SUM(" + ConversationListViewColumns.SMS_UNREAD_COUNT + ") AS unread_count ",
+    };
+
+    public int getUnreadNotifyMessages() {
+        return mUnreadNotifyMessages;
+    }
+
+    private void updateUnreadNotifyMessages(Cursor cursor) {
+        if (cursor != null && cursor.moveToFirst()) {
+            int count = cursor.getInt(0);
+            mUnreadNotifyMessages = count;
+        }
+    }
+    //*/
 }

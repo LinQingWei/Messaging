@@ -91,6 +91,10 @@ public class ArchivedConversationListActivity extends AbstractConversationListAc
 
     @Override
     public boolean isSwipeAnimatable() {
+        //*/ Way Lin, 20171230. feature for notify conversations.
+        return !isInConversationListSelectMode();
+        /*/
         return false;
+        //*/
     }
 }

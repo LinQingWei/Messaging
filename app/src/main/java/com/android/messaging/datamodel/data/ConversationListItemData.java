@@ -404,6 +404,10 @@ public class ConversationListItemData {
             + '=' + DatabaseHelper.MESSAGES_TABLE + '.' + MessageColumns._ID + ") "
             + JOIN_PARTICIPANTS
             + "ORDER BY " + DatabaseHelper.CONVERSATIONS_TABLE + '.'
+            //*/ Way Lin, 20171230. feature for top status.
+            + ConversationColumns.TOP_STATUS + " DESC, "
+            + DatabaseHelper.CONVERSATIONS_TABLE + "."
+            //*/
             + ConversationColumns.SORT_TIMESTAMP + " DESC";
 
     public static class ConversationListViewColumns implements BaseColumns {

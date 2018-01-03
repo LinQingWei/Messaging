@@ -618,4 +618,24 @@ public class ConversationListFragment extends Fragment implements ConversationLi
     }
 
     //*/
+
+    //*/ Way Lin, 20171230. feature for notify conversations.
+    @Override
+    public boolean isArchivedMode() {
+        return mArchiveMode;
+    }
+
+    @Override
+    public int getUnreadNotifyCount() {
+        final ConversationListData listData = mListBinding.getData();
+        return listData.getUnreadNotifyMessages();
+    }
+
+    @Override
+    public void onUnreadNotifyListCursorUpdated() {
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+    //*/
 }

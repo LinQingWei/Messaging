@@ -16,7 +16,6 @@
 package com.android.messaging.ui.conversationlist;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -31,13 +30,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.messaging.R;
+import com.android.messaging.datamodel.DataModel;
 import com.android.messaging.datamodel.binding.Binding;
 import com.android.messaging.datamodel.binding.BindingBase;
 import com.android.messaging.datamodel.data.ConversationListData;
-import com.android.messaging.datamodel.data.ConversationListItemData;
 import com.android.messaging.datamodel.data.ConversationListData.ConversationListDataListener;
+import com.android.messaging.datamodel.data.ConversationListItemData;
 import com.android.messaging.ui.ListEmptyView;
-import com.android.messaging.datamodel.DataModel;
 
 /**
  * Allow user to pick conversation to which an incoming attachment will be shared.
@@ -160,4 +159,11 @@ public class ShareIntentFragment extends DialogFragment implements ConversationL
     @Override
     public void setBlockedParticipantsAvailable(boolean blockedAvailable) {
     }
+    //*/ Way Lin, 20180103. feature for notify conversations.
+
+    @Override
+    public void onUnreadNotifyListCursorUpdated() {
+        // DO NOTHING
+    }
+    //*/
 }

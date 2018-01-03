@@ -12,4 +12,5 @@
     <string name="freeme_action_untop">取消置顶</string>
     <string name="freeme_top_toast_message">"已置顶 <xliff:g id="COUNT">%d</xliff:g> 个"</string>
     <string name="freeme_untop_toast_message">"已取消置顶 <xliff:g id="COUNT">%d</xliff:g> 个"</string>
+    <string name="freeme_notify_set_title">"通知类信息"</string>
 </resources>

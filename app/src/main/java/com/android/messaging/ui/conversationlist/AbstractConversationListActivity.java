@@ -287,6 +287,10 @@ public abstract class AbstractConversationListActivity  extends BugleActionBarAc
                     (MultiSelectActionModeCallback) getActionModeCallback();
             multiSelectActionMode.toggleSelect(listData, conversationListItemData);
             mConversationListFragment.updateUi();
+        //*/ Way Lin, 20180104. feature for notify conversations.
+        } else if (conversationView.isNotificationsBar()) {
+            UIIntents.get().launchArchivedConversationsActivity(this);
+        //*/
         } else {
             final String conversationId = conversationListItemData.getConversationId();
             Bundle sceneTransitionAnimationOptions = null;

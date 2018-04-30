@@ -272,8 +272,8 @@ public class ConversationActivityUiState implements Parcelable, Cloneable {
         assertValidState();
     }
 
-    public static final Creator<ConversationActivityUiState> CREATOR
-        = new Creator<ConversationActivityUiState>() {
+    public static final Parcelable.Creator<ConversationActivityUiState> CREATOR
+        = new Parcelable.Creator<ConversationActivityUiState>() {
         @Override
         public ConversationActivityUiState createFromParcel(final Parcel in) {
             return new ConversationActivityUiState(in);

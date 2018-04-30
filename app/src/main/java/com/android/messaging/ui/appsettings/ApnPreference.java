@@ -131,7 +131,7 @@ public class ApnPreference extends Preference implements
         setApnRadioButtonContentDescription(buttonView);
     }
 
-    public void onClick(View v) {
+    public void onClick(android.view.View v) {
         if ((v != null) && (R.id.text_layout == v.getId())) {
             Context context = getContext();
             if (context != null) {

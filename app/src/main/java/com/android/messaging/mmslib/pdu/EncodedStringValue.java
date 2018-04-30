@@ -141,7 +141,7 @@ public class EncodedStringValue implements Cloneable {
     }
 
     /**
-     * Convert this object to a {@link String}. If the encoding of
+     * Convert this object to a {@link java.lang.String}. If the encoding of
      * the EncodedStringValue is null or unsupported, it will be
      * treated as iso-8859-1 encoding.
      *

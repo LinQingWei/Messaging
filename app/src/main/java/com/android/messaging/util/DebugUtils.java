@@ -180,7 +180,7 @@ public class DebugUtils {
         });
 
         builder.setAdapter(arrayAdapter,
-                new DialogInterface.OnClickListener() {
+                new android.content.DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface arg0, final int pos) {
                 arrayAdapter.getItem(pos).run();
@@ -236,7 +236,7 @@ public class DebugUtils {
      * @param id The ID to use as part of the dump file name
      * @param messages The raw SMS data
      */
-    public static void dumpSms(final long id, final SmsMessage[] messages,
+    public static void dumpSms(final long id, final android.telephony.SmsMessage[] messages,
             final String format) {
         try {
             final String dumpFileName = MmsUtils.SMS_DUMP_PREFIX + Long.toString(id);
@@ -251,7 +251,7 @@ public class DebugUtils {
                         dos.writeUTF(format);
                     }
                     dos.writeInt(messages.length);
-                    for (final SmsMessage message : messages) {
+                    for (final android.telephony.SmsMessage message : messages) {
                         final byte[] pdu = message.getPdu();
                         dos.writeInt(pdu.length);
                         dos.write(pdu, 0, pdu.length);

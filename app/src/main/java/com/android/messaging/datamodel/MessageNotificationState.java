@@ -787,7 +787,7 @@ public abstract class MessageNotificationState extends NotificationState {
             bigText.append("\n\n").append(statusText);
         }
 
-        final Builder notifBuilder = new Builder(context);
+        final NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(context);
         final NotificationCompat.Style notifStyle =
                 new NotificationCompat.BigTextStyle(notifBuilder).bigText(bigText);
         notifBuilder.setStyle(notifStyle);
@@ -1228,8 +1228,8 @@ public abstract class MessageNotificationState extends NotificationState {
                     LogUtil.d(TAG, "Found " + failedMessages.size() + " failed messages");
                 }
                 if (failedMessages.size() > 0) {
-                    final Builder builder =
-                            new Builder(context);
+                    final NotificationCompat.Builder builder =
+                            new NotificationCompat.Builder(context);
 
                     CharSequence line1;
                     CharSequence line2;

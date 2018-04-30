@@ -84,8 +84,8 @@ public class WriteDraftMessageAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<WriteDraftMessageAction> CREATOR
-            = new Creator<WriteDraftMessageAction>() {
+    public static final Parcelable.Creator<WriteDraftMessageAction> CREATOR
+            = new Parcelable.Creator<WriteDraftMessageAction>() {
         @Override
         public WriteDraftMessageAction createFromParcel(final Parcel in) {
             return new WriteDraftMessageAction(in);

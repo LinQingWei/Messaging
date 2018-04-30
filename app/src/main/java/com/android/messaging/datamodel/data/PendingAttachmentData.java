@@ -161,8 +161,8 @@ public class PendingAttachmentData extends MessagePartData {
         out.writeInt(mCurrentState);
     }
 
-    public static final Creator<PendingAttachmentData> CREATOR
-        = new Creator<PendingAttachmentData>() {
+    public static final Parcelable.Creator<PendingAttachmentData> CREATOR
+        = new Parcelable.Creator<PendingAttachmentData>() {
             @Override
             public PendingAttachmentData createFromParcel(final Parcel in) {
                 return new PendingAttachmentData(in);

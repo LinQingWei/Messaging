@@ -38,8 +38,8 @@ public class ReadDraftDataAction extends Action implements Parcelable {
     public interface ReadDraftDataActionListener {
         @RunsOnMainThread
         abstract void onReadDraftDataSucceeded(final ReadDraftDataAction action,
-                                               final Object data, final MessageData message,
-                                               final ConversationListItemData conversation);
+                final Object data, final MessageData message,
+                final ConversationListItemData conversation);
         @RunsOnMainThread
         abstract void onReadDraftDataFailed(final ReadDraftDataAction action, final Object data);
     }
@@ -146,8 +146,8 @@ public class ReadDraftDataAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<ReadDraftDataAction> CREATOR
-            = new Creator<ReadDraftDataAction>() {
+    public static final Parcelable.Creator<ReadDraftDataAction> CREATOR
+            = new Parcelable.Creator<ReadDraftDataAction>() {
         @Override
         public ReadDraftDataAction createFromParcel(final Parcel in) {
             return new ReadDraftDataAction(in);

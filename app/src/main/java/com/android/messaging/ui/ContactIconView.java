@@ -134,7 +134,7 @@ public class ContactIconView extends AsyncImageView {
                 && !TextUtils.isEmpty(mContactLookupKey)) ||
                 !TextUtils.isEmpty(mNormalizedDestination)) {
             if (!mDisableClickHandler) {
-                setOnClickListener(new OnClickListener() {
+                setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(final View view) {
                         ContactUtil.showOrAddContact(view, mContactId, mContactLookupKey,

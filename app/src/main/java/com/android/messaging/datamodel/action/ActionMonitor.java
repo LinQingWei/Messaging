@@ -53,7 +53,7 @@ public class ActionMonitor {
          */
         @RunsOnMainThread
         abstract void onActionExecuted(ActionMonitor monitor, final Action action,
-                                       final Object data, final Object result);
+                final Object data, final Object result);
     }
 
     /**
@@ -68,13 +68,13 @@ public class ActionMonitor {
          */
         @RunsOnMainThread
         abstract void onActionSucceeded(ActionMonitor monitor,
-                                        final Action action, final Object data, final Object result);
+                final Action action, final Object data, final Object result);
         /**
          * @param result value returned by {@link Action#processBackgroundFailure}
          */
         @RunsOnMainThread
         abstract void onActionFailed(ActionMonitor monitor, final Action action,
-                                     final Object data, final Object result);
+                final Object data, final Object result);
     }
 
     /**

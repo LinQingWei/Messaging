@@ -76,11 +76,11 @@ public class ConversationListItemView extends FrameLayout implements OnClickList
     public interface HostInterface {
         boolean isConversationSelected(final String conversationId);
         void onConversationClicked(final ConversationListItemData conversationListItemData,
-                                   boolean isLongClick, final ConversationListItemView conversationView);
+                boolean isLongClick, final ConversationListItemView conversationView);
         boolean isSwipeAnimatable();
         List<SnackBarInteraction> getSnackBarInteractions();
         void startFullScreenPhotoViewer(final Uri initialPhoto, final Rect initialPhotoBounds,
-                                        final Uri photosUri);
+                final Uri photosUri);
         void startFullScreenVideoViewer(final Uri videoUri);
         boolean isSelectionMode();
         //*/ Way Lin, 20171228. redesign conversation list.

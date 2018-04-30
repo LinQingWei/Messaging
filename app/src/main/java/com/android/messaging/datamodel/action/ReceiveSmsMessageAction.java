@@ -178,8 +178,8 @@ public class ReceiveSmsMessageAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<ReceiveSmsMessageAction> CREATOR
-            = new Creator<ReceiveSmsMessageAction>() {
+    public static final Parcelable.Creator<ReceiveSmsMessageAction> CREATOR
+            = new Parcelable.Creator<ReceiveSmsMessageAction>() {
         @Override
         public ReceiveSmsMessageAction createFromParcel(final Parcel in) {
             return new ReceiveSmsMessageAction(in);

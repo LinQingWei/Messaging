@@ -74,8 +74,8 @@ public class HandleLowStorageAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<HandleLowStorageAction> CREATOR
-            = new Creator<HandleLowStorageAction>() {
+    public static final Parcelable.Creator<HandleLowStorageAction> CREATOR
+            = new Parcelable.Creator<HandleLowStorageAction>() {
         @Override
         public HandleLowStorageAction createFromParcel(final Parcel in) {
             return new HandleLowStorageAction(in);

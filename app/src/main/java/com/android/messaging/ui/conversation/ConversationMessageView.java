@@ -83,9 +83,9 @@ public class ConversationMessageView extends FrameLayout implements View.OnClick
         View.OnLongClickListener, OnAttachmentClickListener {
     public interface ConversationMessageViewHost {
         boolean onAttachmentClick(ConversationMessageView view, MessagePartData attachment,
-                                  Rect imageBounds, boolean longPress);
+                Rect imageBounds, boolean longPress);
         SubscriptionListEntry getSubscriptionEntryForSelfParticipant(String selfParticipantId,
-                                                                     boolean excludeDefault);
+                boolean excludeDefault);
     }
 
     private final ConversationMessageData mData;

@@ -72,8 +72,8 @@ class MmsVideoRecorder extends MediaRecorder {
 
         setCamera(camera);
         setOrientationHint(orientation);
-        setAudioSource(AudioSource.CAMCORDER);
-        setVideoSource(VideoSource.CAMERA);
+        setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+        setVideoSource(MediaRecorder.VideoSource.CAMERA);
         setOutputFormat(mCamcorderProfile.fileFormat);
         setOutputFile(
                 Factory.get().getApplicationContext().getContentResolver().openFileDescriptor(

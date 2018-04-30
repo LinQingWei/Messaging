@@ -3,7 +3,7 @@
     package="com.android.ex.chips">
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:supportsRtl="true">
 
     </application>

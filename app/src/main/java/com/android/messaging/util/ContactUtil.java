@@ -198,7 +198,7 @@ public class ContactUtil {
         if (contactId > ParticipantData.PARTICIPANT_CONTACT_ID_NOT_RESOLVED
                 && !TextUtils.isEmpty(contactLookupKey)) {
             final Uri lookupUri =
-                    Contacts.getLookupUri(contactId, contactLookupKey);
+                    ContactsContract.Contacts.getLookupUri(contactId, contactLookupKey);
             ContactsContract.QuickContact.showQuickContact(view.getContext(), view, lookupUri,
                     ContactsContract.QuickContact.MODE_LARGE, null);
         } else if (!TextUtils.isEmpty(normalizedDestination) && !TextUtils.equals(
@@ -417,9 +417,9 @@ public class ContactUtil {
         }
 
         // TODO: Handle enterprise contacts
-        final Uri uri = Contacts.CONTENT_URI.buildUpon()
+        final Uri uri = ContactsContract.Contacts.CONTENT_URI.buildUpon()
                 .appendPath(String.valueOf(contactId))
-                .appendPath(Contacts.Data.CONTENT_DIRECTORY).build();
+                .appendPath(ContactsContract.Contacts.Data.CONTENT_DIRECTORY).build();
 
         String selection = ContactsContract.Data.MIMETYPE + "=?";
         final String[] selectionArgs = {
@@ -519,7 +519,7 @@ public class ContactUtil {
      * Returns if a given contact id belongs to managed profile.
      */
     public static boolean isEnterpriseContactId(final long contactId) {
-        return OsUtil.isAtLeastL() && Contacts.isEnterpriseContactId(contactId);
+        return OsUtil.isAtLeastL() && ContactsContract.Contacts.isEnterpriseContactId(contactId);
     }
 
     /**

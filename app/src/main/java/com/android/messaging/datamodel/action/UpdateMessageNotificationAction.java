@@ -43,8 +43,8 @@ public class UpdateMessageNotificationAction extends Action {
         super(in);
     }
 
-    public static final Creator<UpdateMessageNotificationAction> CREATOR
-            = new Creator<UpdateMessageNotificationAction>() {
+    public static final Parcelable.Creator<UpdateMessageNotificationAction> CREATOR
+            = new Parcelable.Creator<UpdateMessageNotificationAction>() {
         @Override
         public UpdateMessageNotificationAction createFromParcel(final Parcel in) {
             return new UpdateMessageNotificationAction(in);

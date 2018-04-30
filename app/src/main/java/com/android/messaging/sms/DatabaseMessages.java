@@ -224,8 +224,8 @@ public class DatabaseMessages {
             mBody = in.readString();
         }
 
-        public static final Creator<SmsMessage> CREATOR
-                = new Creator<SmsMessage>() {
+        public static final Parcelable.Creator<SmsMessage> CREATOR
+                = new Parcelable.Creator<SmsMessage>() {
             @Override
             public SmsMessage createFromParcel(final Parcel in) {
                 return new SmsMessage(in);
@@ -508,8 +508,8 @@ public class DatabaseMessages {
             }
         }
 
-        public static final Creator<MmsMessage> CREATOR
-                = new Creator<MmsMessage>() {
+        public static final Parcelable.Creator<MmsMessage> CREATOR
+                = new Parcelable.Creator<MmsMessage>() {
             @Override
             public MmsMessage createFromParcel(final Parcel in) {
                 return new MmsMessage(in);
@@ -840,8 +840,8 @@ public class DatabaseMessages {
             mSize = in.readLong();
         }
 
-        public static final Creator<MmsPart> CREATOR
-                = new Creator<MmsPart>() {
+        public static final Parcelable.Creator<MmsPart> CREATOR
+                = new Parcelable.Creator<MmsPart>() {
             @Override
             public MmsPart createFromParcel(final Parcel in) {
                 return new MmsPart(in);
@@ -922,8 +922,8 @@ public class DatabaseMessages {
             mProtocol = in.readInt();
         }
 
-        public static final Creator<LocalDatabaseMessage> CREATOR
-                = new Creator<LocalDatabaseMessage>() {
+        public static final Parcelable.Creator<LocalDatabaseMessage> CREATOR
+                = new Parcelable.Creator<LocalDatabaseMessage>() {
             @Override
             public LocalDatabaseMessage createFromParcel(final Parcel in) {
                 return new LocalDatabaseMessage(in);

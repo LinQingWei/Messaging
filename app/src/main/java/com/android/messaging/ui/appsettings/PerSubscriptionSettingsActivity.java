@@ -142,7 +142,7 @@ public class PerSubscriptionSettingsActivity extends BugleActionBarActivity {
                 advancedCategory.removePreference(wirelessAlertPref);
             } else {
                 wirelessAlertPref.setOnPreferenceClickListener(
-                        new OnPreferenceClickListener() {
+                        new Preference.OnPreferenceClickListener() {
                             @Override
                             public boolean onPreferenceClick(final Preference preference) {
                                 try {

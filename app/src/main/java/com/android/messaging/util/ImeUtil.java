@@ -29,8 +29,8 @@ public class ImeUtil {
 
     public interface ImeStateHost {
         void onDisplayHeightChanged(int heightMeasureSpec);
-        void registerImeStateObserver(ImeStateObserver observer);
-        void unregisterImeStateObserver(ImeStateObserver observer);
+        void registerImeStateObserver(ImeUtil.ImeStateObserver observer);
+        void unregisterImeStateObserver(ImeUtil.ImeStateObserver observer);
         boolean isImeOpen();
     }
 

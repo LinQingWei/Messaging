@@ -48,14 +48,14 @@ public class OsUtil {
 
     static {
         final int v = getApiVersion();
-        sIsAtLeastICS_MR1 = v >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1;
-        sIsAtLeastJB = v >= Build.VERSION_CODES.JELLY_BEAN;
-        sIsAtLeastJB_MR1 = v >= Build.VERSION_CODES.JELLY_BEAN_MR1;
-        sIsAtLeastJB_MR2 = v >= Build.VERSION_CODES.JELLY_BEAN_MR2;
-        sIsAtLeastKLP = v >= Build.VERSION_CODES.KITKAT;
-        sIsAtLeastL = v >= Build.VERSION_CODES.LOLLIPOP;
-        sIsAtLeastL_MR1 = v >= Build.VERSION_CODES.LOLLIPOP_MR1;
-        sIsAtLeastM = v >= Build.VERSION_CODES.M;
+        sIsAtLeastICS_MR1 = v >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1;
+        sIsAtLeastJB = v >= android.os.Build.VERSION_CODES.JELLY_BEAN;
+        sIsAtLeastJB_MR1 = v >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
+        sIsAtLeastJB_MR2 = v >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
+        sIsAtLeastKLP = v >= android.os.Build.VERSION_CODES.KITKAT;
+        sIsAtLeastL = v >= android.os.Build.VERSION_CODES.LOLLIPOP;
+        sIsAtLeastL_MR1 = v >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1;
+        sIsAtLeastM = v >= android.os.Build.VERSION_CODES.M;
         sIsAtLeastN = BuildCompat.isAtLeastN();
     }
 
@@ -135,7 +135,7 @@ public class OsUtil {
      * @return The Android API version of the OS that we're currently running on.
      */
     public static int getApiVersion() {
-        return Build.VERSION.SDK_INT;
+        return android.os.Build.VERSION.SDK_INT;
     }
 
     public static boolean isSecondaryUser() {
@@ -189,7 +189,7 @@ public class OsUtil {
      * {@link android.app.Activity#requestPermission}. Note that if it
      * returns true, it cannot return false in the same process as the OS kills the process when
      * any permission is revoked.
-     * @param permission A permission from {@link Manifest.permission}
+     * @param permission A permission from {@link android.Manifest.permission}
      */
     public static boolean hasPermission(final String permission) {
         if (OsUtil.isAtLeastM()) {

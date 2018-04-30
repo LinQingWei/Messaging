@@ -133,7 +133,7 @@ class CameraMediaChooser extends MediaChooser implements
                 if (CameraManager.get().isRecording()) {
                     CameraManager.get().stopVideo();
                 } else {
-                    final MediaCallback callback = new MediaCallback() {
+                    final CameraManager.MediaCallback callback = new CameraManager.MediaCallback() {
                         @Override
                         public void onMediaReady(
                                 final Uri uriToVideo, final String contentType,

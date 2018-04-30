@@ -51,10 +51,10 @@ public abstract class NotificationState {
                 MessageData.BUGLE_STATUS_OUTGOING_FAILED + " OR " +
                 MessageColumns.STATUS + " = " +
                 MessageData.BUGLE_STATUS_INCOMING_DOWNLOAD_FAILED + ") AND " +
-                MessageColumns.SEEN + " = 0)";
+                DatabaseHelper.MessageColumns.SEEN + " = 0)";
 
-        static final String FAILED_ORDER_BY = MessageColumns.CONVERSATION_ID + ", " +
-                MessageColumns.SENT_TIMESTAMP + " asc";
+        static final String FAILED_ORDER_BY = DatabaseHelper.MessageColumns.CONVERSATION_ID + ", " +
+                DatabaseHelper.MessageColumns.SENT_TIMESTAMP + " asc";
     }
 
     public final ConversationIdSet mConversationIds;

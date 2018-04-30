@@ -856,25 +856,25 @@ public class MmsUtils {
             final int status, final int type, final long threadId) {
         final ContentValues values = new ContentValues(7);
 
-        values.put(Sms.ADDRESS, address);
+        values.put(Telephony.Sms.ADDRESS, address);
         if (date != null) {
-            values.put(Sms.DATE, date);
+            values.put(Telephony.Sms.DATE, date);
         }
-        values.put(Sms.READ, read ? 1 : 0);
-        values.put(Sms.SEEN, seen ? 1 : 0);
-        values.put(Sms.SUBJECT, subject);
-        values.put(Sms.BODY, body);
+        values.put(Telephony.Sms.READ, read ? 1 : 0);
+        values.put(Telephony.Sms.SEEN, seen ? 1 : 0);
+        values.put(Telephony.Sms.SUBJECT, subject);
+        values.put(Telephony.Sms.BODY, body);
         if (OsUtil.isAtLeastL_MR1()) {
-            values.put(Sms.SUBSCRIPTION_ID, subId);
+            values.put(Telephony.Sms.SUBSCRIPTION_ID, subId);
         }
-        if (status != Sms.STATUS_NONE) {
-            values.put(Sms.STATUS, status);
+        if (status != Telephony.Sms.STATUS_NONE) {
+            values.put(Telephony.Sms.STATUS, status);
         }
-        if (type != Sms.MESSAGE_TYPE_ALL) {
-            values.put(Sms.TYPE, type);
+        if (type != Telephony.Sms.MESSAGE_TYPE_ALL) {
+            values.put(Telephony.Sms.TYPE, type);
         }
         if (threadId != -1L) {
-            values.put(Sms.THREAD_ID, threadId);
+            values.put(Telephony.Sms.THREAD_ID, threadId);
         }
         return resolver.insert(uri, values);
     }
@@ -907,8 +907,8 @@ public class MmsUtils {
             final ContentResolver resolver = context.getContentResolver();
             final ContentValues values = new ContentValues(2);
 
-            values.put(Sms.TYPE, type);
-            values.put(Sms.DATE, date);
+            values.put(Telephony.Sms.TYPE, type);
+            values.put(Telephony.Sms.DATE, date);
             final int cnt = resolver.update(uri, values, null, null);
             if (cnt == 1) {
                 if (LogUtil.isLoggable(TAG, LogUtil.DEBUG)) {
@@ -991,8 +991,8 @@ public class MmsUtils {
             final ContentValues values = new ContentValues();
 
             final long timestampInSeconds = timestampInMillis / 1000L;
-            values.put(Mms.MESSAGE_BOX, box);
-            values.put(Mms.DATE, timestampInSeconds);
+            values.put(Telephony.Mms.MESSAGE_BOX, box);
+            values.put(Telephony.Mms.DATE, timestampInSeconds);
             final int cnt = resolver.update(uri, values, null, null);
             if (cnt == 1) {
                 if (LogUtil.isLoggable(TAG, LogUtil.DEBUG)) {
@@ -2378,7 +2378,7 @@ public class MmsUtils {
         if (sendReq != null) {
             final Uri outboxUri = MmsUtils.insertSendReq(context, sendReq, subId, subPhoneNumber);
             if (outboxUri != null) {
-                messageUri = ContentUris.withAppendedId(Mms.CONTENT_URI,
+                messageUri = ContentUris.withAppendedId(Telephony.Mms.CONTENT_URI,
                         ContentUris.parseId(outboxUri));
                 if (LogUtil.isLoggable(TAG, LogUtil.DEBUG)) {
                     LogUtil.d(TAG, "Mmsutils: Inserted sending MMS message into telephony, uri: "
@@ -2578,7 +2578,7 @@ public class MmsUtils {
      */
     public static int deleteThread(final long threadId, final long cutOffTimestampInMillis) {
         final ContentResolver resolver = Factory.get().getApplicationContext().getContentResolver();
-        final Uri threadUri = ContentUris.withAppendedId(Threads.CONTENT_URI, threadId);
+        final Uri threadUri = ContentUris.withAppendedId(Telephony.Threads.CONTENT_URI, threadId);
         if (cutOffTimestampInMillis < Long.MAX_VALUE) {
             return resolver.delete(threadUri, Sms.DATE + "<=?",
                     new String[] { Long.toString(cutOffTimestampInMillis) });

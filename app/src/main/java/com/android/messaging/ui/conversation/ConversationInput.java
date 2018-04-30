@@ -28,7 +28,7 @@ public abstract class ConversationInput {
      */
     public interface ConversationInputBase {
         boolean showHideInternal(final ConversationInput target, final boolean show,
-                                 final boolean animate);
+                final boolean animate);
         String getInputStateKey(final ConversationInput input);
         void beginUpdate();
         void handleOnShow(final ConversationInput target);

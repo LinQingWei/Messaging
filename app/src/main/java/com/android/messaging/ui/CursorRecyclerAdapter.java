@@ -158,7 +158,7 @@ public abstract class CursorRecyclerAdapter<VH extends RecyclerView.ViewHolder>
     }
 
     /**
-     * @see RecyclerView.Adapter#getItem(int)
+     * @see android.support.v7.widget.RecyclerView.Adapter#getItem(int)
      */
     public Object getItem(final int position) {
         if (mDataValid && mCursor != null) {
@@ -170,7 +170,7 @@ public abstract class CursorRecyclerAdapter<VH extends RecyclerView.ViewHolder>
     }
 
     /**
-     * @see RecyclerView.Adapter#getItemId(int)
+     * @see android.support.v7.widget.RecyclerView.Adapter#getItemId(int)
      */
     @Override
     public long getItemId(final int position) {
@@ -210,7 +210,7 @@ public abstract class CursorRecyclerAdapter<VH extends RecyclerView.ViewHolder>
     public abstract void bindViewHolder(VH holder, Context context, Cursor cursor);
 
     /**
-     * @see RecyclerView.Adapter#createViewHolder(Context, ViewGroup, int)
+     * @see android.support.v7.widget.RecyclerView.Adapter#createViewHolder(Context, ViewGroup, int)
      */
     public abstract VH createViewHolder(Context context, ViewGroup parent, int viewType);
 

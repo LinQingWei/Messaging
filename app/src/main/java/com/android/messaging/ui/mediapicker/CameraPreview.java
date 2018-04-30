@@ -68,8 +68,8 @@ public class CameraPreview {
 
     public int getWidthMeasureSpec(final int widthMeasureSpec, final int heightMeasureSpec) {
         if (mCameraHeight >= 0) {
-            final int width = MeasureSpec.getSize(widthMeasureSpec);
-            return MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
+            final int width = View.MeasureSpec.getSize(widthMeasureSpec);
+            return MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
         } else {
             return widthMeasureSpec;
         }
@@ -78,7 +78,7 @@ public class CameraPreview {
     public int getHeightMeasureSpec(final int widthMeasureSpec, final int heightMeasureSpec) {
         if (mCameraHeight >= 0) {
             final int orientation = getContext().getResources().getConfiguration().orientation;
-            final int width = MeasureSpec.getSize(widthMeasureSpec);
+            final int width = View.MeasureSpec.getSize(widthMeasureSpec);
             final float aspectRatio = (float) mCameraWidth / (float) mCameraHeight;
             int height;
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -86,7 +86,7 @@ public class CameraPreview {
             } else {
                 height = (int) (width / aspectRatio);
             }
-            return MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+            return View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
         } else {
             return heightMeasureSpec;
         }

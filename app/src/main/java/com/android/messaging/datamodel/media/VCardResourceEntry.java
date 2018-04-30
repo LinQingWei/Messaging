@@ -56,7 +56,7 @@ public class VCardResourceEntry {
 
     public static final String KIND_LOCATION = "location";
 
-    private final List<VCardResourceEntryDestinationItem> mContactInfo;
+    private final List<VCardResourceEntry.VCardResourceEntryDestinationItem> mContactInfo;
     private final Uri mAvatarUri;
     private final String mDisplayName;
     private final CustomVCardEntry mVCard;
@@ -158,15 +158,15 @@ public class VCardResourceEntry {
         };
     }
 
-    public List<VCardResourceEntryDestinationItem> getContactInfo() {
+    public List<VCardResourceEntry.VCardResourceEntryDestinationItem> getContactInfo() {
         return mContactInfo;
     }
 
     private static List<VCardResourceEntryDestinationItem> getContactInfoFromVCardEntry(
             final VCardEntry vcard) {
         final Resources resources = Factory.get().getApplicationContext().getResources();
-        final List<VCardResourceEntryDestinationItem> retList =
-                new ArrayList<VCardResourceEntryDestinationItem>();
+        final List<VCardResourceEntry.VCardResourceEntryDestinationItem> retList =
+                new ArrayList<VCardResourceEntry.VCardResourceEntryDestinationItem>();
         if (vcard.getPhoneList() != null) {
             for (final PhoneData phone : vcard.getPhoneList()) {
                 final Intent intent = new Intent(Intent.ACTION_DIAL);

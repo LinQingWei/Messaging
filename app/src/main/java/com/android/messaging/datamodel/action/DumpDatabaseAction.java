@@ -104,8 +104,8 @@ public class DumpDatabaseAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<DumpDatabaseAction> CREATOR
-            = new Creator<DumpDatabaseAction>() {
+    public static final Parcelable.Creator<DumpDatabaseAction> CREATOR
+            = new Parcelable.Creator<DumpDatabaseAction>() {
         @Override
         public DumpDatabaseAction createFromParcel(final Parcel in) {
             return new DumpDatabaseAction(in);

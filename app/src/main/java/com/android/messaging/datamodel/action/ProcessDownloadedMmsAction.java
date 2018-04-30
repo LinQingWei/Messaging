@@ -553,8 +553,8 @@ public class ProcessDownloadedMmsAction extends Action {
         super(in);
     }
 
-    public static final Creator<ProcessDownloadedMmsAction> CREATOR
-            = new Creator<ProcessDownloadedMmsAction>() {
+    public static final Parcelable.Creator<ProcessDownloadedMmsAction> CREATOR
+            = new Parcelable.Creator<ProcessDownloadedMmsAction>() {
         @Override
         public ProcessDownloadedMmsAction createFromParcel(final Parcel in) {
             return new ProcessDownloadedMmsAction(in);

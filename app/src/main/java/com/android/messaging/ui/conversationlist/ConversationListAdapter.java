@@ -42,8 +42,8 @@ public class ConversationListAdapter
 
     /**
      * @see com.android.messaging.ui.CursorRecyclerAdapter#bindViewHolder(
-     * RecyclerView.ViewHolder, Context,
-     * Cursor)
+     * android.support.v7.widget.RecyclerView.ViewHolder, android.content.Context,
+     * android.database.Cursor)
      */
     @Override
     public void bindViewHolder(final ConversationListViewHolder holder, final Context context,

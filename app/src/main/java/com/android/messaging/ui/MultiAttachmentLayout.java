@@ -69,7 +69,7 @@ public class MultiAttachmentLayout extends FrameLayout {
 
     public interface OnAttachmentClickListener {
         boolean onAttachmentClick(MessagePartData attachment, Rect viewBoundsOnScreen,
-                                  boolean longPress);
+                boolean longPress);
     }
 
     private static final int GRID_WIDTH = 4;    // in # of cells

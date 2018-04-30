@@ -875,7 +875,7 @@ public class PduPersister {
                 // EncodedStringValue() throws NPE if data is empty
                 if (data != null) {
                     final ContentValues cv = new ContentValues();
-                    cv.put(Part.TEXT, new EncodedStringValue(charset, data).getString());
+                    cv.put(Mms.Part.TEXT, new EncodedStringValue(charset, data).getString());
                     if (mContentResolver.update(uri, cv, null, null) != 1) {
                         throw new MmsException("unable to update " + uri.toString());
                     }

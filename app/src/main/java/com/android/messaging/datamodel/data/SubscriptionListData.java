@@ -29,7 +29,7 @@ import java.util.Locale;
 
 /**
  * This is a UI facing data model component that holds a list of
- * {@link SubscriptionListEntry}'s, one for each *active* subscriptions.
+ * {@link SubscriptionListData.SubscriptionListEntry}'s, one for each *active* subscriptions.
  *
  * This is used to:
  * 1) Show a list of SIMs in the SIM Selector

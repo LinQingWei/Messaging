@@ -560,7 +560,7 @@ public class SyncMessagesAction extends Action implements Parcelable {
                         // we actually display it
                         final DatabaseMessages.MmsPart part =
                                 DatabaseMessages.MmsPart.get(cursor, false/*loadMedia*/);
-                        final MmsMessage mms = mmses.get(part.mMessageId);
+                        final DatabaseMessages.MmsMessage mms = mmses.get(part.mMessageId);
                         if (mms != null) {
                             mms.addPart(part);
                         }
@@ -617,8 +617,8 @@ public class SyncMessagesAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<SyncMessagesAction> CREATOR
-            = new Creator<SyncMessagesAction>() {
+    public static final Parcelable.Creator<SyncMessagesAction> CREATOR
+            = new Parcelable.Creator<SyncMessagesAction>() {
         @Override
         public SyncMessagesAction createFromParcel(final Parcel in) {
             return new SyncMessagesAction(in);

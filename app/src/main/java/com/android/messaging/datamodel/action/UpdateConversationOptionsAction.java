@@ -136,8 +136,8 @@ public class UpdateConversationOptionsAction extends Action
         super(in);
     }
 
-    public static final Creator<UpdateConversationOptionsAction> CREATOR
-            = new Creator<UpdateConversationOptionsAction>() {
+    public static final Parcelable.Creator<UpdateConversationOptionsAction> CREATOR
+            = new Parcelable.Creator<UpdateConversationOptionsAction>() {
         @Override
         public UpdateConversationOptionsAction createFromParcel(final Parcel in) {
             return new UpdateConversationOptionsAction(in);

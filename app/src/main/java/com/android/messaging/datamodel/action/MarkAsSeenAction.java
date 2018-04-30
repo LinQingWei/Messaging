@@ -106,8 +106,8 @@ public class MarkAsSeenAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<MarkAsSeenAction> CREATOR
-            = new Creator<MarkAsSeenAction>() {
+    public static final Parcelable.Creator<MarkAsSeenAction> CREATOR
+            = new Parcelable.Creator<MarkAsSeenAction>() {
         @Override
         public MarkAsSeenAction createFromParcel(final Parcel in) {
             return new MarkAsSeenAction(in);

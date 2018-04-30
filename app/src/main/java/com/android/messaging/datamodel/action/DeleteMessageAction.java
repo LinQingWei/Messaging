@@ -115,8 +115,8 @@ public class DeleteMessageAction extends Action implements Parcelable {
         super(in);
     }
 
-    public static final Creator<DeleteMessageAction> CREATOR
-            = new Creator<DeleteMessageAction>() {
+    public static final Parcelable.Creator<DeleteMessageAction> CREATOR
+            = new Parcelable.Creator<DeleteMessageAction>() {
         @Override
         public DeleteMessageAction createFromParcel(final Parcel in) {
             return new DeleteMessageAction(in);
